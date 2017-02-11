@@ -77,7 +77,7 @@ void InitializeMenu()
 	{		
 		ComboQ = ComboSettings->CheckBox("Use Q", true);
 		QHealthCombo = ComboSettings->AddInteger("Minimum HP% to use Q", 1, 20, 10);
-		ComboW = ComboSettings->CheckBox("Use W", true);		
+		ComboW = ComboSettings->CheckBox("Use W", true);
 		WHealthCombo = ComboSettings->AddInteger("Minimum HP% to use W", 1, 25, 20);
 		ComboE = ComboSettings->CheckBox("Use E", true);
 	}
@@ -93,14 +93,14 @@ void InitializeMenu()
 	KillstealSettings = MainMenu->AddMenu("Killsteal Settings");
 	{
 		Killsteal = KillstealSettings->CheckBox("Activate KillSteal", true);
-		KillstealQ = KillstealSettings->CheckBox("Use Q to KillSteal", true);		
+		KillstealQ = KillstealSettings->CheckBox("Use Q to KillSteal", true);
 	}
 
 	MiscSettings = MainMenu->AddMenu("Misc Settings");
 	{
 		AutoQGapcloser = MiscSettings->CheckBox("Automatically Q GapCloser", true);
-		handleW = LaneClearSettings->CheckBox("Auto handle W", true);
-		useR = MiscSettings->CheckBox("Automatically use R", true);		
+		handleW = MiscSettings->CheckBox("Auto handle W", true);
+		useR = MiscSettings->CheckBox("Automatically use R", true);
 		RHealthEnemies = MiscSettings->CheckBox("If enemies nearby", true);
 		RHealth = MiscSettings->AddInteger("Minimum HP% to use R", 1, 60, 20);
 	}
@@ -116,14 +116,14 @@ void InitializeMenu()
 	{
 		useQlc = LaneClearSettings->CheckBox("Use Q to last hit in laneclear", true);
 		useQlcHP = LaneClearSettings->AddInteger("Minimum HP% to use Q to laneclear", 1, 60, 40);
-		useWlc = LaneClearSettings->CheckBox("Use W in laneclear", true);		
+		useWlc = LaneClearSettings->CheckBox("Use W in laneclear", true);
 		useWlcHP = LaneClearSettings->AddInteger("Minimum HP% to use W to laneclear", 1, 60, 40);
 		useWlcMinions = LaneClearSettings->AddInteger("Minimum minions to W in laneclear", 1, 10, 4);
 		useQj = LaneClearSettings->CheckBox("Use Q to jungle", true);
 		useQjHP = LaneClearSettings->AddInteger("Minimum HP% to use Q in jungle", 1, 60, 20);
-		useWj = LaneClearSettings->CheckBox("Use W to jungle", true);		
+		useWj = LaneClearSettings->CheckBox("Use W to jungle", true);
 		useWjHP = LaneClearSettings->AddInteger("Minimum HP% to use W to jungle", 1, 60, 20);
-		useEj = LaneClearSettings->CheckBox("Use E to jungle", true);		
+		useEj = LaneClearSettings->CheckBox("Use E to jungle", true);	
 	}
 
 	DrawingSettings = MainMenu->AddMenu("Drawing Settings");
