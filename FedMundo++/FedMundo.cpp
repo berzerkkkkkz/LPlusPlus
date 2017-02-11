@@ -51,6 +51,9 @@ IMenu* DrawingSettings;
 IMenuOption* DrawReady;
 IMenuOption* DrawQ;
 
+IMenu* SkinsChange;
+IMenuOption* MiscSkin;
+
 IUnit* myHero;
 
 ISpell2* Q;
@@ -128,6 +131,11 @@ void InitializeMenu()
 		DrawReady = DrawingSettings->CheckBox("Draw Only Ready Spells", true);
 		DrawQ = DrawingSettings->CheckBox("Draw Q", true);		
 	}
+
+	SkinsChange = MainMenu->AddMenu("Skins Changer");
+	{
+		MiscSkin = SkinsChange->AddInteger("Skins", 1, 10, 8);
+	}
 }
 
 bool IsBurning()
@@ -157,6 +165,14 @@ void Draw()
 		if (DrawQ->Enabled()) { GRender->DrawOutlinedCircle(GEntityList->Player()->GetPosition(), Vec4(255, 0, 0, 255), Q->Range()); }		
 	}
 
+}
+
+void SkinChanger()
+{
+	if (myHero->GetSkinId() != MiscSkin->GetInteger())
+	{
+		myHero->SetSkinId(MiscSkin->GetInteger());
+	}
 }
 
 void Automatic()
@@ -356,6 +372,7 @@ PLUGIN_EVENT(void) OnGameUpdate()
 	}
 
 	Automatic();
+	SkinChanger();
 }
 
 PLUGIN_EVENT(void) OnGapcloser(GapCloserSpell const& args)
