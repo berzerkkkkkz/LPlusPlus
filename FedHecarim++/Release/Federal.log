@@ -1,0 +1,20 @@
+﻿Build started 12/02/2017 14:46:44.
+     1>Project "C:\Users\forke\Desktop\Projetos do Federal\LPlusPlus\FedHecarim++\Federal.vcxproj" on node 2 (Build target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(388,5): warning MSB8028: The intermediate directory (Release\) contains files shared from another project (FedOlaf++.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+     1>ClCompile:
+         H:\Arquivos de Programas (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D FEDERAL_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Program.cpp
+         Program.cpp
+     1>Program.cpp(1): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+       Link:
+         H:\Arquivos de Programas (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\forke\Desktop\Projetos do Federal\LPlusPlus\FedHecarim++\Release\FedHecarim++.dll" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\forke\Desktop\Projetos do Federal\LPlusPlus\FedHecarim++\Release\FedHecarim++.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\forke\Desktop\Projetos do Federal\LPlusPlus\FedHecarim++\Release\FedHecarim++.lib" /MACHINE:X86 /SAFESEH /DLL Release\Program.obj
+         Release\PluginSDK.obj
+         Release\SimpleLib.obj
+            Creating library C:\Users\forke\Desktop\Projetos do Federal\LPlusPlus\FedHecarim++\Release\FedHecarim++.lib and object C:\Users\forke\Desktop\Projetos do Federal\LPlusPlus\FedHecarim++\Release\FedHecarim++.exp
+         Generating code
+         Finished generating code
+         Federal.vcxproj -> C:\Users\forke\Desktop\Projetos do Federal\LPlusPlus\FedHecarim++\Release\FedHecarim++.dll
+     1>Done Building Project "C:\Users\forke\Desktop\Projetos do Federal\LPlusPlus\FedHecarim++\Federal.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.49
