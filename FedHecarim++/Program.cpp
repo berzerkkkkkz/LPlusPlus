@@ -79,7 +79,7 @@ void InitializeSpells()
 	E = GPluginSDK->CreateSpell2(kSlotE, kTargetCast, false, false, kCollidesWithNothing);
 	E->SetOverrideRange(1000.f);
 	R = GPluginSDK->CreateSpell2(kSlotR, kLineCast, false, true, kCollidesWithNothing);	
-	R->SetSkillshot(0.25f, 300.f, 1200.f, 1230.f);
+	R->SetSkillshot(0.25f, 300.f, 1200.f, 1230.f);	
 }
 
 void InitializeMenu()
@@ -92,10 +92,10 @@ void InitializeMenu()
 		useWCombo = ComboSettings->CheckBox("Use W", true);
 		useECombo = ComboSettings->CheckBox("Use E", true);
 		useRCombo = ComboSettings->CheckBox("Use R", true);
-		Rsolo = ComboSettings->CheckBox("Use R | 1v1 Mode", true);
-		RAllys = ComboSettings->CheckBox("Use R | Allys > Enemys", true);
-		RCount = ComboSettings->AddInteger("Use R | Counts Enemies >=", 1, 5, 3);		
-	}
+		Rsolo = ComboSettings->CheckBox("R 1v1 Mode Kill Easy", true);
+		RAllys = ComboSettings->CheckBox("Use R if Allys > Enemys", true);
+		RCount = ComboSettings->AddInteger("Use R if Counts Enemies >=", 1, 5, 3);		
+	}		
 
 	HarassSettings = MainMenu->AddMenu("Harass Settings");
 	{
@@ -245,12 +245,42 @@ void SkinChanger()
 	}
 }
 
+double ComboDamage(IUnit* enemy)
+
+{
+	float AutoDmg = GDamage->GetAutoAttackDamage(myHero, enemy, true) * (1 + myHero->Crit());
+	double dmg = 0;
+
+	if (Q->IsReady())
+	{
+		dmg += GDamage->GetSpellDamage(myHero, enemy, kSlotQ);
+	}
+
+	if (W->IsReady())
+	{
+		dmg += GDamage->GetSpellDamage(myHero, enemy, kSlotW);
+	}
+
+	if (E->IsReady())
+	{
+		dmg += GDamage->GetSpellDamage(myHero, enemy, kSlotE);
+	}
+
+	if (R->IsReady())
+	{
+		dmg += GDamage->GetSpellDamage(myHero, enemy, kSlotR);
+	}
+		
+		dmg += AutoDmg * 2;
+	
+		//thunder
+		//dmg += (10 * myHero->GetLevel()) + (myHero->PhysicalDamage() * 0.30f) + (myHero->MagicDamage() * 0.10f);
+
+	return dmg;
+}
+
 void Automatic()
 {
-	Killsteal = KillstealSettings->CheckBox("Activate KillSteal", true);
-	KillstealQ = KillstealSettings->CheckBox("Use Q to KillSteal", true);
-	KillstealR = KillstealSettings->AddInteger("Use R | If Target Distance >=", 100, 1230, 600);
-
 	// Killsteal
 	if (Killsteal->Enabled())
 	{
@@ -260,7 +290,7 @@ void Automatic()
 			{
 				auto damage = GHealthPrediction->GetKSDamage(hero, kSlotQ, Q->GetDelay(), false);
 
-				if (damage > hero->GetHealth()){
+				if (damage+50 > hero->GetHealth()){
 
 					Q->CastOnPlayer();
 				}
@@ -269,7 +299,7 @@ void Automatic()
 			{
 				auto damage = GHealthPrediction->GetKSDamage(hero, kSlotR, R->GetDelay(), false);
 
-				if (damage > hero->GetHealth()){
+				if (damage+50 > hero->GetHealth()){
 
 					R->CastOnTarget(hero, kHitChanceHigh);
 				}
@@ -335,15 +365,18 @@ void Combo()
 		if (qTarget != nullptr && qTarget->IsValidTarget()
 			&& SimpleLib::SimpleLib::GetDistance(myHero, qTarget) < R->Range())
 		{
-			if (Rsolo->Enabled() && Q->IsReady() && CountEnemy(myHero->GetPosition(), 3000) < 2)
-			{
-				R->CastOnTarget(qTarget, kHitChanceHigh);				
+			if (Rsolo->Enabled() && Q->IsReady() && CountEnemy(myHero->GetPosition(), 3000) < 2 && CountAlly(qTarget->GetPosition(), 2000) < 1)
+			{	
+				if (ComboDamage(qTarget) >= qTarget->GetHealth())
+				{
+					R->CastOnTarget(qTarget, kHitChanceHigh);
+				}
 			}
 			else if (Enemies >= Min)
 			{
 				R->CastOnPosition(Position);				
 			}
-			else if (RAllys->Enabled() && Q->IsReady() && CountEnemy(myHero->GetPosition(), 3000) < CountAlly(myHero->GetPosition(), 3000))
+			else if (RAllys->Enabled() && Q->IsReady() && CountEnemy(myHero->GetPosition(), 3000) < CountAlly(myHero->GetPosition(), 3000) + 1)
 			{
 				R->CastOnPosition(Position);
 			}
@@ -417,7 +450,7 @@ void LaneClear()
 
 PLUGIN_EVENT(void) OnGameUpdate()
 {
-	if (GEntityList->Player()->IsDead())
+	if (myHero->IsDead())
 		return;
 
 	switch (GOrbwalking->GetOrbwalkingMode())
@@ -490,7 +523,10 @@ PLUGIN_EVENT(void) OnCreateObject(IUnit* Source)
 PLUGIN_EVENT(void) OnProcessSpell(CastedSpell const& Args)
 
 {
-	
+	if (Args.Caster_ == myHero)
+	{
+		GGame->PrintChat(Args.Name_);
+	}
 }
 
 PLUGIN_EVENT(void) OnRender()

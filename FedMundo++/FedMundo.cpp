@@ -65,6 +65,7 @@ void InitializeSpells()
 {
 	Q = SimpleLib::SimpleLib::LoadSkillshot('Q', 0.275, 1000, 2000, 60, kLineCast, true, false, static_cast<eCollisionFlags>(kCollidesWithHeroes | kCollidesWithMinions | kCollidesWithYasuoWall));	
 	W = GPluginSDK->CreateSpell2(kSlotW, kTargetCast, false, false, kCollidesWithNothing);
+	W->SetOverrideRange(325.f);
 	E = GPluginSDK->CreateSpell2(kSlotE, kTargetCast, false, false, kCollidesWithNothing);
 	R = GPluginSDK->CreateSpell2(kSlotR, kTargetCast, false, false, kCollidesWithNothing);
 }
@@ -140,7 +141,14 @@ void InitializeMenu()
 
 bool IsBurning()
 {
-	return myHero->HasBuff("BurningAgony");
+	if (myHero->HasBuff("BurningAgony"))
+	{		
+		return true;			
+	}
+	else
+	{		
+		return false;
+	}
 }
 
 bool FoundEnemies(IUnit* source, float range)
@@ -152,6 +160,17 @@ bool FoundEnemies(IUnit* source, float range)
 	}
 
 	return false;				
+}
+
+bool FoundMinions(float range)
+{
+	for (auto Minions : GEntityList->GetAllMinions(false, true, true))
+	{
+		if (myHero->IsValidTarget(Minions, range))
+			return true;		
+	}
+
+	return false;
 }
 
 void Draw()
@@ -205,20 +224,15 @@ void Automatic()
 		}
 	}
 	// BurningManager
-	if (handleW->Enabled() && IsBurning() && W->IsReady())
+	
+	if (handleW->Enabled() && IsBurning() && W->IsReady() && GOrbwalking->GetOrbwalkingMode() == kModeNone)
 	{
-		if (!FoundEnemies(myHero, 600))
+		if (!FoundEnemies(myHero, 550) && !FoundMinions(550) || myHero->HealthPercent() < 20)
 		{
-			for (auto bMinions : GEntityList->GetAllMinions(false, true, true))
-			{
-				if (!bMinions->IsDead() && !myHero->IsValidTarget(bMinions, W->Range() + 50))
-				{
-					W->CastOnPlayer();
-				}
-			}
+			W->CastOnPlayer();			
 		}
-	}
-
+	}		
+	
 	// Auto R Low % HP
 	if (R->IsReady() && useR->Enabled() && myHero->HealthPercent() <= RHealth->GetInteger())
 	{
@@ -289,6 +303,7 @@ void LastHit()
 					}
 					else if (!qRange->Enabled())
 					{
+						GOrbwalking->ResetAA();
 						Q->CastOnUnit(minion);
 					}
 				}
@@ -299,62 +314,65 @@ void LastHit()
 
 void JungleClear()
 {
-	if (useQj->Enabled() && Q->IsReady() || useWj->Enabled() && W->IsReady())
+	if (useQj->Enabled() && Q->IsReady())
 	{
 		for (auto jMinion : GEntityList->GetAllMinions(false, false, true))
 		{
-			if (jMinion != nullptr && !jMinion->IsDead())
+			if (useQj->Enabled() && Q->IsReady() && myHero->IsValidTarget(jMinion, Q->Range()) && myHero->HealthPercent() >= useQjHP->GetInteger())
 			{
-				if (useQj->Enabled() && Q->IsReady() && myHero->IsValidTarget(jMinion, Q->Range()) && myHero->HealthPercent() >= useQjHP->GetInteger())
-				{					
-					Q->CastOnUnit(jMinion);					
-				}
-
-				if (useWj->Enabled() && W->IsReady() && !IsBurning() && myHero->IsValidTarget(jMinion, W->Range() + 50) && myHero->HealthPercent() >= useWjHP->GetInteger())
+				if (jMinion != nullptr && !jMinion->IsDead())
 				{
-					W->CastOnPlayer();
-				}
-				else if (useWj->Enabled() && W->IsReady() && IsBurning() && !myHero->IsValidTarget(jMinion, W->Range() + 100))
-				{
-					W->CastOnPlayer();
+					Q->CastOnUnit(jMinion);
 				}
 			}
 		}
 	}
-}
 	
+	if (useWj->Enabled() && W->IsReady() && !IsBurning() && FoundMinions(400) && myHero->HealthPercent() >= useWjHP->GetInteger())
+		{
+			W->CastOnPlayer();			
+		}		
+}	
 
 void LaneClear()
 {
-	if (useQlc->Enabled() && Q->IsReady() || useWlc->Enabled() && W->IsReady())
+	if (useQlc->Enabled() && Q->IsReady() && myHero->HealthPercent() > useQlcHP->GetInteger())
 	{
 		for (auto minion : GEntityList->GetAllMinions(false, true, false))
 		{
 			if (minion != nullptr && minion->IsEnemy(myHero) && !minion->IsDead() && myHero->IsValidTarget(minion, Q->Range()))
 			{
-				Vec3 pos;
-				int hit;
-				GPrediction->FindBestCastPosition(W->Range(), W->Radius() + 50, false, true, false, pos, hit);
+				auto damage = GHealthPrediction->GetKSDamage(minion, kSlotQ, Q->GetDelay(), true);
 
-				if (useWlc->Enabled() && W->IsReady() && !IsBurning() && hit >= useWlcMinions->GetInteger() && myHero->HealthPercent() >= useWlcHP->GetInteger())
+				if (damage > minion->GetHealth())
 				{
-					W->CastOnPlayer();
-				}
-				else if (useWlc->Enabled() && W->IsReady() && IsBurning() && hit < useWlcMinions->GetInteger())
-				{
-					W->CastOnPlayer();
-				}
-
-				if (useQlc->Enabled() && Q->IsReady() && myHero->HealthPercent() > useQlcHP->GetInteger())
-				{
-					auto damage = GHealthPrediction->GetKSDamage(minion, kSlotQ, Q->GetDelay(), true);
-
-					if (damage > minion->GetHealth())
-					{
-						Q->CastOnUnit(minion);
-					}
+					Q->CastOnUnit(minion);
 				}
 			}
+		}
+	}
+
+	Vec3 pos;
+	int hit;
+	GPrediction->FindBestCastPosition(600 , W->Radius() + 50, false, true, false, pos, hit);
+
+	if (useWlc->Enabled() && W->IsReady() && !IsBurning() && hit >= useWlcMinions->GetInteger() && myHero->HealthPercent() >= useWlcHP->GetInteger())
+	{		
+			W->CastOnPlayer();		
+	}	
+}
+
+void AutoStopW()
+{
+	if (W->IsReady() && IsBurning())
+	{
+		if (myHero->HealthPercent() < useWlcHP->GetInteger())
+		{
+			W->CastOnPlayer();			
+		}
+		else if (!FoundMinions(600))
+		{
+			W->CastOnPlayer();			
 		}
 	}
 }
@@ -362,7 +380,7 @@ void LaneClear()
 PLUGIN_EVENT(void) OnGameUpdate()
 {
 	if (GEntityList->Player()->IsDead())
-		return;
+		return;	
 	
 	switch (GOrbwalking->GetOrbwalkingMode())
 	{
@@ -376,6 +394,7 @@ PLUGIN_EVENT(void) OnGameUpdate()
 	case kModeLaneClear:
 		LaneClear();
 		JungleClear();
+		AutoStopW();
 		break;
 	}
 
@@ -452,12 +471,11 @@ PLUGIN_EVENT(void) OnRender()
 }
 
 PLUGIN_API void OnLoad(IPluginSDK* PluginSDK)
-{
-	myHero = GEntityList->Player();
-
-	if (myHero->ChampionName() != "DrMundo") return;
-	
+{	
 	PluginSDKSetup(PluginSDK);
+
+	myHero = GEntityList->Player();	
+
 	InitializeMenu();
 	InitializeSpells();
 	

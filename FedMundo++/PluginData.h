@@ -3,6 +3,8 @@
 
 #include <Windows.h>
 #include <vector>
+#include <cstdint>
+#include <functional>
 
 #include "Vector3.h"
 #include "LPPConstants.h"
@@ -23,34 +25,57 @@ enum ePredictionChance
 	kHitChanceImmobile
 };
 
+struct AdvPredictionInput
+{
+	Vec3 FromPosition;				// Start position for casting
+	Vec3 RangeCheckFromPosition;	// Start position for prediction range checks
+	bool IsAoE;						// True for area of effect spells
+	bool AddBoundingRadius;			// Adds target bounding radius to prediction
+	int CollisionFlags;				// (Example kCollidesWithMinions|kCollidesWithYasuoWall)
+	float Delay;					// Delay in seconds for cast (e.g WindupTime)
+	float Radius;					// Radius of the spell
+	float Range;					// Range of the spell
+	float Speed;					// Speed of the spell
+	int Type;						// Type of the spell (e.g kLineCast)
+	IUnit* Target;					// Unit to run prediction for
+};
+
+struct AdvPredictionOutput
+{
+	int HitChance;						// Odds of hitting target (e.g kHitChanceHigh)
+	Vec3 CastPosition;					// Predicted position of where you should cast
+	Vec3 TargetPosition;				// Predicted position of unit when spell will land
+	std::vector<IUnit*> AoETargetsHit;	// Vector of all targets hit when using AoE prediction
+};
+
 struct NavigationPath
 {
-	int CurrentWaypoint_;
-	void* VMT;
-	Vec3 StartPosition_;
-	Vec3 EndPosition;
-	Vec3* WaypointStart_;
-	Vec3* WaypointEnd_;
+	int			CurrentWaypoint_;
+	void*		VMT;
+	Vec3		StartPosition_;
+	Vec3		EndPosition;
+	Vec3*		WaypointStart_;
+	Vec3*		WaypointEnd_;
 };
 
 struct InterruptibleSpell
 {
-	IUnit* Target;
-	eInterruptibleDanger DangerLevel;
-	float EndTime;
-	bool MovementInterupts;
-	void* Data;
+	IUnit*					Target;
+	eInterruptibleDanger	DangerLevel;
+	float					EndTime;
+	bool					MovementInterupts;
+	void*					Data;
 };
 
 struct UnitDash
 {
-	IUnit* Source;
-	Vec3 StartPosition;
-	Vec3 EndPosition;
-	int StartTick;
-	int EndTick;
-	int Duration;
-	float Speed;
+	IUnit*				Source;
+	Vec3				StartPosition;
+	Vec3				EndPosition;
+	int					StartTick;
+	int					EndTick;
+	int					Duration;
+	float				Speed;
 };
 
 struct GapCloserSpell
@@ -66,19 +91,19 @@ struct GapCloserSpell
 
 struct CastedSpell
 {
-	IUnit* Caster_;
-	IUnit* Target_;
-	bool AutoAttack_;
-	char Name_[64];
-	float Windup_;
-	float Animation_;
-	Vec3 Position_;
-	void* Data_;
-	float Radius_;
-	float Speed_;
-	float Damage_;
-	float Range_;
-	Vec3 EndPosition_;
+	IUnit*	Caster_;
+	IUnit*	Target_;
+	bool	AutoAttack_;
+	char	Name_[64];
+	float	Windup_;
+	float	Animation_;
+	Vec3	Position_;
+	void*	Data_;
+	float	Radius_;
+	float	Speed_;
+	float	Damage_;
+	float	Range_;
+	Vec3	EndPosition_;
 };
 
 struct ItemData
@@ -89,10 +114,7 @@ struct ItemData
 
 struct SpellParams
 {
-	SpellParams()
-	{
-		ZeroMemory(this, sizeof(*this));
-	}
+	SpellParams() { ZeroMemory(this, sizeof(*this)); }
 
 	SpellParams(float Delay, float Speed, float Width = 0, bool Collision = false, eSpellType Type = kLineCast)
 	{
@@ -103,19 +125,17 @@ struct SpellParams
 		SpellType_ = Type;
 	}
 
-	float Delay_;
-	float Speed_;
-	float Width_;
-	bool Collision_;
-	eSpellType SpellType_;
+	float		Delay_;
+	float		Speed_;
+	float		Width_;
+	bool		Collision_;
+	eSpellType	SpellType_;
 };
 
 class IUnit
 {
 public:
-	virtual ~IUnit()
-	{
-	}
+	virtual ~IUnit() { }
 
 	virtual float AttackSpeed() = 0;
 	virtual float MovementSpeed() = 0;
@@ -221,6 +241,11 @@ public:
 	virtual float CritDamageMultiplier() = 0;
 	virtual int GetTimeVisibleMs() = 0;
 	virtual bool IsWard() = 0;
+	virtual bool IsValidObject() = 0;
+	virtual const char* GetClassIdentifier() = 0;
+	virtual bool IsDashing() = 0;
+	virtual bool CreatePath(Vec3 const& EndPosition, std::vector<Vec3>& Out) = 0;
+	virtual bool CreatePath2D(Vec2 const& EndPosition, std::vector<Vec2>& Out) = 0;
 };
 
 #endif // PluginData_h__
