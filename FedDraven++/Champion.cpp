@@ -272,40 +272,39 @@ void LogicE()
 	
 	for (auto hero : GEntityList->GetAllHeros(false, true))
 	{	
-		if (GOrbwalking->GetOrbwalkingMode() == kModeCombo && hero->IsValidTarget() && myHero->GetMana() > R->ManaCost() + E->ManaCost())
+		if (hero != nullptr && hero->IsValidTarget(myHero, E->Range()) && !hero->IsInvulnerable() && !hero->IsDead())
 		{
-			if (SimpleLib::SimpleLib::GetDistance(myHero, hero) > GOrbwalking->GetAutoAttackRange(myHero))
+
+			if (GOrbwalking->GetOrbwalkingMode() == kModeCombo && hero->IsValidTarget() && myHero->GetMana() > R->ManaCost() + E->ManaCost())
 			{
-				E->CastOnTarget(hero, kHitChanceHigh);
+				if (SimpleLib::SimpleLib::GetDistance(myHero, hero) > GOrbwalking->GetAutoAttackRange(myHero))
+				{
+					E->CastOnTarget(hero, kHitChanceHigh);
+				}
+
+				if (myHero->HealthPercent() < 50)
+				{
+					E->CastOnTarget(hero, kHitChanceHigh);
+				}
 			}
 
-			if (myHero->HealthPercent() < 50)
+			if (GOrbwalking->GetOrbwalkingMode() == kModeCombo &&  myHero->GetMana() > R->ManaCost() + E->ManaCost() + (Q->GetManaCost() * 2))
 			{
-				E->CastOnTarget(hero, kHitChanceHigh);
+				E->CastOnTargetAoE(hero, 2, kHitChanceHigh);
 			}
-		}		
 
-		if (GOrbwalking->GetOrbwalkingMode() == kModeCombo &&  myHero->GetMana() > R->ManaCost() + E->ManaCost() + (Q->GetManaCost() * 2))
-		{
-			E->CastOnTargetAoE(hero, 2, kHitChanceHigh);
-		}
-
-		if (GOrbwalking->GetOrbwalkingMode() == kModeMixed && autoE2->Enabled() && myHero->GetMana() > R->ManaCost() + E->ManaCost() + Q->GetManaCost() + W->GetManaCost())
-		{
-			E->CastOnTargetAoE(hero, 2, kHitChanceHigh);
-		}
-
-		if (SimpleLib::SimpleLib::GetDistance(myHero, hero) < 300 && hero->IsMelee())
-		{
-			E->CastOnTarget(hero, kHitChanceMedium);
-		}
-
-		if (KillstealE->Enabled() && E->IsReady())
-		{
-
-			if (hero != nullptr && hero->IsValidTarget(myHero, E->Range()) && !hero->IsInvulnerable() && !hero->IsDead())
+			if (GOrbwalking->GetOrbwalkingMode() == kModeMixed && autoE2->Enabled() && myHero->GetMana() > R->ManaCost() + E->ManaCost() + Q->GetManaCost() + W->GetManaCost())
 			{
+				E->CastOnTargetAoE(hero, 2, kHitChanceHigh);
+			}
 
+			if (SimpleLib::SimpleLib::GetDistance(myHero, hero) < 300 && hero->IsMelee())
+			{
+				E->CastOnTarget(hero, kHitChanceMedium);
+			}
+
+			if (KillstealE->Enabled() && E->IsReady())
+			{
 				auto damage = GHealthPrediction->GetKSDamage(hero, kSlotE, E->GetDelay(), false);
 
 				if (damage > hero->GetHealth() && SimpleLib::SimpleLib::GetDistance(myHero, hero) > GOrbwalking->GetAutoAttackRange(myHero)){

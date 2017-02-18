@@ -201,7 +201,7 @@ void Automatic()
 	{
 		for (auto hero : GEntityList->GetAllHeros(false, true))
 		{
-			if (hero != nullptr && hero->IsValidTarget(myHero, Q->Range()) && !hero->IsInvulnerable())
+			if (hero != nullptr && hero->IsValidTarget(myHero, Q->Range()) && !hero->IsInvulnerable() && !hero->IsDead())
 			{
 				auto damage = GHealthPrediction->GetKSDamage(hero, kSlotQ, Q->GetDelay(), true);
 
@@ -258,7 +258,7 @@ void Combo()
 		if (qTarget != nullptr && qTarget->IsValidTarget()
 			&& SimpleLib::SimpleLib::GetDistance(myHero, qTarget) < Q->Range())
 		{
-			Q->CastOnTarget(qTarget, kHitChanceMedium);
+			Q->CastOnTarget(qTarget, kHitChanceHigh);
 		}
 	}
 
@@ -280,7 +280,7 @@ void Mixed()
 		if (qTarget != nullptr && qTarget->IsValidTarget()
 			&& SimpleLib::SimpleLib::GetDistance(myHero, qTarget) < Q->Range())
 		{
-			Q->CastOnTarget(qTarget, kHitChanceMedium);
+			Q->CastOnTarget(qTarget, kHitChanceHigh);
 		}
 	}
 }
