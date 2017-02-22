@@ -41,6 +41,7 @@ public:
 			AutoUlt = MiscSettings->CheckBox("Automatically use R", true);
 			REnemies = MiscSettings->CheckBox("If enemies nearby", true);
 			HealthR = MiscSettings->AddInteger("Minimum HP% to use R", 1, 60, 20);
+			Predic = MiscSettings->CheckBox("HitChance - Off: Medium | On: Hight", true);
 		}
 
 		LastHitSettings = MainMenu->AddMenu("LastHit Settings");
@@ -82,7 +83,7 @@ public:
 
 	static void LoadSpells()
 	{
-		Q = GPluginSDK->CreateSpell2(kSlotQ, kLineCast, false, false, static_cast<eCollisionFlags>(kCollidesWithHeroes | kCollidesWithMinions | kCollidesWithYasuoWall));
+		Q = GPluginSDK->CreateSpell2(kSlotQ, kLineCast, false, false, kCollidesWithYasuoWall);
 		Q->SetSkillshot(0.25f, 60.f, 2000.f, 1000.f);
 		W = GPluginSDK->CreateSpell2(kSlotW, kTargetCast, false, false, kCollidesWithNothing);
 		W->SetOverrideRange(325.f);
@@ -96,7 +97,7 @@ public:
 		{
 			GEntityList->Player()->SetSkinId(MiscSkin->GetInteger());
 		}
-	}
+	}	
 
 	static bool IsBurning()
 	{
@@ -149,7 +150,14 @@ public:
 			if (qTarget != nullptr && qTarget->IsValidTarget()
 				&& GetDistance(GEntityList->Player(), qTarget) < Q->Range())
 			{
-				Q->CastOnTarget(qTarget, kHitChanceHigh);
+				if (Predic->Enabled())
+				{
+					Q->CastOnTarget(qTarget, kHitChanceHigh);
+				}
+				else
+				{
+					Q->CastOnTarget(qTarget, kHitChanceMedium);
+				}
 			}
 		}
 		// BurningManager
@@ -187,7 +195,14 @@ public:
 			if (qTarget != nullptr && qTarget->IsValidTarget()
 				&& GetDistance(GEntityList->Player(), qTarget) < Q->Range())
 			{
-				Q->CastOnTarget(qTarget, kHitChanceHigh);
+				if (Predic->Enabled())
+				{
+					Q->CastOnTarget(qTarget, kHitChanceHigh);
+				}
+				else
+				{
+					Q->CastOnTarget(qTarget, kHitChanceMedium);
+				}
 			}
 		}
 
@@ -209,7 +224,14 @@ public:
 			if (qTarget != nullptr && qTarget->IsValidTarget()
 				&& GetDistance(GEntityList->Player(), qTarget) < Q->Range())
 			{
-				Q->CastOnTarget(qTarget, kHitChanceHigh);
+				if (Predic->Enabled())
+				{
+					Q->CastOnTarget(qTarget, kHitChanceHigh);
+				}
+				else
+				{
+					Q->CastOnTarget(qTarget, kHitChanceMedium);
+				}
 			}
 		}
 	}

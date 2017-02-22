@@ -3,9 +3,9 @@
 //#include "Version.h"
 #include "Color.h"
 #include "Champions.h"
-
 #include "AutoSmite.h";
-#include "zDrMundo.h"
+
+
 
 
 #pragma region Events
@@ -34,6 +34,7 @@ public:
 	virtual void OnDeleteObject(IUnit* Object) = 0;
 	virtual void OnLevelUp(IUnit* Source, int NewLevel) = 0;
 	virtual void OnProcessSpell(CastedSpell const& Args) = 0;
+	virtual void OnExitVisible(IUnit* Source) = 0;
 	virtual void OnLoad() = 0;
 	//virtual void OnUnLoad() = 0;
 	virtual void OnRender() = 0;
@@ -117,6 +118,92 @@ public:
 	{
 
 	}
+
+	void OnExitVisible(IUnit* Source)
+	{
+		
+	}
+};
+
+class cAshe : public IChampion
+{
+public:
+
+	virtual void OnLoad() override
+	{
+		//Message().MidLaneSeries();
+		Message().ChampionLoadMessage();
+		Ashe().InitializeSpells();
+		Ashe().InitializeMenu();
+	}
+
+	virtual void OnRender() override
+	{
+		Ashe().Drawing();
+	}
+
+	virtual void OnGameUpdate() override
+	{
+		if (GEntityList->Player()->IsDead() && GEntityList->Player()->IsRecalling())
+		{
+			return;
+		}
+
+		if (GOrbwalking->GetOrbwalkingMode() == kModeCombo)
+		{			
+			
+		}
+
+		if (GOrbwalking->GetOrbwalkingMode() == kModeLaneClear)
+		{
+			
+		}
+
+		Ashe().LogicW();
+		Ashe().Automatic();		
+		Ashe().SkinChanger();
+	}
+
+	void OnGapCloser(GapCloserSpell const& Args) override
+	{
+		
+	}
+	void OnInterruptible(InterruptibleSpell const& Args) override
+	{
+
+	}
+	void OnAfterAttack(IUnit* Source, IUnit* Target) override
+	{
+		Ashe().OnAfterAttack(Source, Target);
+	}
+	void OnLevelUp(IUnit* Source, int NewLevel) override
+	{
+
+	}
+
+	void OnCreateObject(IUnit* Source) override
+	{
+		
+	}
+
+	void OnDeleteObject(IUnit* Source) override
+	{
+		
+	}
+
+	void OnDash(UnitDash* Args) override
+	{
+	}
+
+	void OnProcessSpell(CastedSpell const& Args) override
+	{
+
+	}
+
+	void OnExitVisible(IUnit* Source) override
+	{
+		
+	}
 };
 
 class cDraven : public IChampion
@@ -193,6 +280,11 @@ public:
 
 	void OnProcessSpell(CastedSpell const& Args) override
 	{		
+
+	}
+
+	void OnExitVisible(IUnit* Source)
+	{
 
 	}
 };
@@ -274,6 +366,11 @@ public:
 	{
 		Ahri().OnProcessSpell(Args);
 		
+	}
+
+	void OnExitVisible(IUnit* Source)
+	{
+
 	}
 };
 
@@ -358,6 +455,11 @@ public:
 	}
 
 	void OnProcessSpell(CastedSpell const& Args) override
+	{
+
+	}
+
+	void OnExitVisible(IUnit* Source)
 	{
 
 	}
@@ -448,6 +550,11 @@ public:
 	{
 
 	}
+
+	void OnExitVisible(IUnit* Source)
+	{
+
+	}
 };
 
 class cNocturne : public IChampion
@@ -531,6 +638,11 @@ public:
 	}
 
 	void OnProcessSpell(CastedSpell const& Args) override
+	{
+
+	}
+
+	void OnExitVisible(IUnit* Source)
 	{
 
 	}
@@ -618,6 +730,11 @@ public:
 	{
 
 	}
+
+	void OnExitVisible(IUnit* Source)
+	{
+
+	}
 };
 
 
@@ -668,6 +785,11 @@ PLUGIN_EVENT(void) OnProcessSpell(CastedSpell const& Args)
 	pChampion->OnProcessSpell(Args);
 }
 
+PLUGIN_EVENT(void) OnExitVisible(IUnit* Source)
+{
+	pChampion->OnExitVisible(Source);
+}
+
 void LoadChampion()
 {
 	std::string szChampion = GEntityList->Player()->ChampionName();
@@ -675,6 +797,8 @@ void LoadChampion()
 	//ADC
 	if (szChampion == "Varus")
 		pChampion = new cVarus;
+	else if (szChampion == "Ashe")
+		pChampion = new cAshe;
 	else if (szChampion == "Draven")
 		pChampion = new cDraven;
 	// Midlane
@@ -710,6 +834,7 @@ void LoadChampion()
 		GEventManager->AddEventHandler(kEventOnSpellCast, OnProcessSpell);
 		GEventManager->AddEventHandler(kEventOnCreateObject, OnCreateObject);
 		GEventManager->AddEventHandler(kEventOnDestroyObject, OnDeleteObject);
+		GEventManager->AddEventHandler(kEventOnExitVisible, OnExitVisible);
 	}
 }
 
@@ -742,4 +867,5 @@ PLUGIN_API void OnUnload()
 	GEventManager->RemoveEventHandler(kEventOnSpellCast, OnProcessSpell);
 	GEventManager->RemoveEventHandler(kEventOnCreateObject, OnCreateObject);
 	GEventManager->RemoveEventHandler(kEventOnDestroyObject, OnDeleteObject);
+	GEventManager->RemoveEventHandler(kEventOnExitVisible, OnExitVisible);
 }

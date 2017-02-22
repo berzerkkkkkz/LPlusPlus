@@ -187,6 +187,7 @@ IMenuOption* SmiteKeyToggle;
 IMenuOption* FastCombo;
 IMenuOption* ComboA;
 IMenuOption* ComboAA;
+IMenuOption* Predic;
 
 IMenuOption* rStun;
 IMenuOption* rBlind;
@@ -258,6 +259,8 @@ int cnumber = 0;
 short keystate;
 bool smiteKeyWasDown = false;
 bool KeyWasDown = false;
+
+enum HitChance;
 
  
 
