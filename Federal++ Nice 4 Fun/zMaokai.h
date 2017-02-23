@@ -240,7 +240,7 @@ public:
 				{
 					if (minion != nullptr && !minion->IsDead() && GEntityList->Player()->IsValidTarget(minion, W->Range()))
 					{
-						W->CastOnPlayer();
+						W->CastOnUnit(minion);
 					}
 				}
 			}
