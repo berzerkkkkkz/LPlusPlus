@@ -7,7 +7,7 @@ class Olaf
 {
 public:
 
-	void InitializeMenu()
+	static void InitializeMenu()
 	{
 		MainMenu = GPluginSDK->AddMenu("Federal Olaf");
 
@@ -104,7 +104,7 @@ public:
 		}
 	}
 
-	void LoadSpells()
+	static void LoadSpells()
 	{
 		Q = GPluginSDK->CreateSpell2(kSlotQ, kLineCast, false, true, kCollidesWithYasuoWall);
 		Q->SetSkillshot(0.20f, 75.f, 1600.f, 1000.f);
@@ -115,7 +115,7 @@ public:
 		
 	}
 
-	void SkinChanger()
+	static void SkinChanger()
 	{
 		if (GEntityList->Player()->GetSkinId() != MiscSkin->GetInteger())
 		{
@@ -123,7 +123,7 @@ public:
 		}
 	}	
 
-	void Automatic()
+	static void Automatic()
 	{
 		// Killsteal
 		if (Killsteal->Enabled())
@@ -235,7 +235,7 @@ public:
 		}
 	}
 
-	void GotoAxe(Vec3 target)
+	static void GotoAxe(Vec3 target)
 	{
 		auto maxDist = gotoAxeRange->GetInteger();
 		//entretorres
@@ -245,7 +245,7 @@ public:
 		}
 	}
 
-	void CastQ()
+	static void CastQ()
 	{
 		if (Q->IsReady())
 		{
@@ -277,7 +277,7 @@ public:
 		}
 	}
 
-	void CastE()
+	static void CastE()
 	{
 		if (E->IsReady())
 		{
@@ -291,7 +291,7 @@ public:
 		}
 	}
 
-	void Combo()
+	static void Combo()
 	{
 		if (ComboQ->Enabled())
 		{
@@ -309,7 +309,7 @@ public:
 		}		
 	}
 
-	void Harass()
+	static void Harass()
 	{
 		if (HarassQ->Enabled() && GEntityList->Player()->ManaPercent() >= HarassMana->GetInteger())
 		{
@@ -327,7 +327,7 @@ public:
 		}
 	}
 
-	void LastHit()
+	static void LastHit()
 	{
 		if (LastHitQ->Enabled() && Q->IsReady() && GEntityList->Player()->ManaPercent() >= LastHitMana->GetInteger())
 		{
@@ -371,7 +371,7 @@ public:
 		}
 	}
 
-	void JungleClear()
+	static void JungleClear()
 	{
 		for (auto minion : GEntityList->GetAllMinions(false, false, true))
 		{
@@ -429,7 +429,7 @@ public:
 		}
 	}
 
-	void LaneClear()
+	static void LaneClear()
 	{	
 
 		if (gotoAxelc->Enabled() && !FoundMinionsNeutral(E->Range() + 100))
@@ -488,7 +488,7 @@ public:
 		}
 	}
 
-	void Drawing()
+	static void Drawing()
 	{
 		if (DrawReady->Enabled())
 		{
@@ -513,7 +513,7 @@ public:
 		}
 	}		
 
-	void OnGapcloser(GapCloserSpell const& args)
+	static void OnGapcloser(GapCloserSpell const& args)
 	{
 		if (args.Sender->IsEnemy(GEntityList->Player()) && args.Sender->IsHero())
 		{
@@ -537,7 +537,7 @@ public:
 		}
 	}
 
-	void OnAfterAttack(IUnit* source, IUnit* target)
+	static void OnAfterAttack(IUnit* source, IUnit* target)
 	{
 		if (source != GEntityList->Player() || target == nullptr)
 			return;
@@ -563,7 +563,7 @@ public:
 		}
 	}
 
-	void OnCreateObject(IUnit* Source)
+	static void OnCreateObject(IUnit* Source)
 	{
 		if (strstr(Source->GetObjectName(), "Olaf_Base_Q_Axe_Ally"))
 		{
@@ -574,7 +574,7 @@ public:
 		}
 	}
 
-	void OnDeleteObject(IUnit* Source)
+	static void OnDeleteObject(IUnit* Source)
 	{
 		if (strstr(Source->GetObjectName(), "Olaf_Base_Q_Axe_Ally"))
 		{

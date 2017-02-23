@@ -236,7 +236,8 @@ IInventoryItem* Hydra;
 IInventoryItem* Ravenous;
 
 Vec2 HeroCoordsVec2;
-Vec3 lastQpos, lastQpos2;
+Vec3 lastQpos;
+Vec3 lastQpos2;
 Vec3 MissileEndPos;
 Vec3 extz;
 

@@ -158,10 +158,11 @@ public:
 		{
 			
 		}
-
+		Ashe().LogicR();
 		Ashe().LogicW();
 		Ashe().Automatic();		
 		Ashe().SkinChanger();
+		Ashe().KeyPressUltimate();
 	}
 
 	void OnGapCloser(GapCloserSpell const& Args) override
@@ -170,7 +171,7 @@ public:
 	}
 	void OnInterruptible(InterruptibleSpell const& Args) override
 	{
-
+		Ashe().OnInterruptible(Args);
 	}
 	void OnAfterAttack(IUnit* Source, IUnit* Target) override
 	{
@@ -846,7 +847,7 @@ PLUGIN_API void OnLoad(IPluginSDK* PluginSDK)
 	LoadChampion();
 	pChampion->OnLoad();
 	GRender->NotificationEx(Color::LightBlue().Get(), 2, true, true, "Welcome to Federal++ Nice 4 Fun!");
-	GRender->NotificationEx(Color::LightBlue().Get(), 3, true, true, "Sup Champions: Ahri, Draven, Hecarim, Nocturne, Olaf, Dr. Mundo");
+	GRender->NotificationEx(Color::LightBlue().Get(), 3, true, true, "Sup Champions: Ahri, Ashe, Draven, Hecarim, Nocturne, Olaf, Dr. Mundo");
 }
 
 // Called when plugin is unloaded

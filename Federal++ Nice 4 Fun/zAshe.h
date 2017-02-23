@@ -14,10 +14,11 @@ public:
 		ComboSettings = MainMenu->AddMenu("Combo Settings");
 		{
 			ComboQ = ComboSettings->CheckBox("Use Q", true);			
-			ComboW = ComboSettings->CheckBox("Use W", true);			
+			ComboW = ComboSettings->CheckBox("Use W", true);
+			AutoUlt = ComboSettings->CheckBox("Use R", true);
 			ComboR = ComboSettings->CheckBox("Use R KS combo R + W + AA", true);
 			UltEnemies = ComboSettings->CheckBox("Auto R Aoe", true);
-			SemiManualKey = ComboSettings->AddKey("Semi-manual cast R key", 74);
+			SemiManualKey = ComboSettings->AddKey("Semi-manual cast R key", 71);
 		}
 
 		HarassSettings = MainMenu->AddMenu("Harass Settings");
@@ -54,8 +55,7 @@ public:
 		MiscSettings = MainMenu->AddMenu("Misc Settings");
 		{			
 			RInterrupter = MiscSettings->CheckBox("Automatically R Interrupt Spell", true);
-			RGapCloser = MiscSettings->CheckBox("Automatically R GapCloser", true);
-			HealthR = MiscSettings->AddInteger("If My HealthPercent <= %", 1, 90, 30);
+			RGapCloser = MiscSettings->CheckBox("Automatically R GapCloser", true);			
 			CCedW = MiscSettings->CheckBox("Auto W When Enemies Cant Move", true);
 			CCedR = MiscSettings->CheckBox("Auto R When Enemies Cant Move", false);
 			AutoE = MiscSettings->CheckBox("Auto E target Brush", true);
@@ -66,8 +66,7 @@ public:
 		{
 			DrawReady = DrawingSettings->CheckBox("Draw Only Ready Spells", true);			
 			DrawW = DrawingSettings->CheckBox("Draw W", true);
-			DrawE = DrawingSettings->CheckBox("Draw E", false);
-			DrawR = DrawingSettings->CheckBox("Draw R", false);
+			DrawE = DrawingSettings->CheckBox("Draw E", false);			
 			DrawComboDamage = DrawingSettings->CheckBox("Draw combo damage", true);
 		}
 
@@ -115,6 +114,38 @@ public:
 			}
 		}
 	}	
+
+	static void KeyPressUltimate()
+	{
+		if (IsKeyDown(SemiManualKey))
+		{
+
+			if (!R->IsReady())
+			{
+				return;
+			}
+			auto TargetR = GTargetSelector->FindTarget(QuickestKill, PhysicalDamage, 2000);
+
+			if (TargetR == nullptr || TargetR->IsDead() || TargetR->IsInvulnerable() || !TargetR->IsValidTarget(GEntityList->Player(), R->Range()))
+			{
+				return;
+			}
+
+			auto rdamage = GHealthPrediction->GetKSDamage(TargetR, kSlotR, R->GetDelay(), false);
+			auto wdamage = GHealthPrediction->GetKSDamage(TargetR, kSlotW, W->GetDelay(), false);
+			auto autodamage = GDamage->GetAutoAttackDamage(GEntityList->Player(), TargetR, false);
+
+			if (R->CastOnTargetAoE(TargetR, 2, kHitChanceVeryHigh))
+			{
+				return;
+			}
+
+			if ((autodamage * 6) + rdamage + wdamage > TargetR->GetHealth())
+			{
+				R->CastOnTarget(TargetR, kHitChanceHigh);
+			}
+		}
+	}
 
 	static void LogicW()
 	{
@@ -232,29 +263,86 @@ public:
 			}
 		}
 	}
-
-	static void Combo()
+	
+	static void LogicR()
 	{
-	}
+		if (AutoUlt->Enabled())
+		{
+			for (auto target : GEntityList->GetAllHeros(false, true))
+			{
+				if (target->IsValidTarget(GEntityList->Player(), 2000) && ValidUlt(target) && R->IsReady())
+				{
+					auto rDmg = GHealthPrediction->GetKSDamage(target, kSlotR, R->GetDelay(), false);
 
-	static void Harass()
-	{
-	}
+					if (GOrbwalking->GetOrbwalkingMode() == kModeCombo && CountEnemy(target->GetPosition(), 250) > 2 && UltEnemies->Enabled() && target->IsValidTarget(GEntityList->Player(), 1500))
+					{
+						if (Predic->Enabled())
+						{
+							R->CastOnTarget(target, kHitChanceHigh);
+						}
+						else
+						{
+							R->CastOnTarget(target, kHitChanceMedium);
+						}
+					}
 
-	static void LastHit()
-	{
-	}
+					if (GOrbwalking->GetOrbwalkingMode() == kModeCombo && target->IsValidTarget(GEntityList->Player(), W->Range()) && ComboR && GDamage->GetAutoAttackDamage(GEntityList->Player(), target, false) * 5 + rDmg + GDamage->GetSpellDamage(GEntityList->Player(), target, kSlotW) > target->GetHealth() && target->HasBuffOfType(BUFF_Slow))
+					{
+						if (Predic->Enabled())
+						{
+							R->CastOnTarget(target, kHitChanceHigh);
+						}
+						else
+						{
+							R->CastOnTarget(target, kHitChanceMedium);
+						}
+					}
+					if (Killsteal->Enabled() && KillstealR->Enabled() && rDmg > target->GetHealth() && CountAlly(target->GetPosition(), 600) == 0 && GetDistance(GEntityList->Player(), target) > 1000)
+					{
+						if (Predic->Enabled())
+						{
+							R->CastOnTarget(target, kHitChanceHigh);
+						}
+						else
+						{
+							R->CastOnTarget(target, kHitChanceMedium);
+						}
+					}
+				}
+			}
+		}
 
-	static void JungleClear()
-	{
+		if (GEntityList->Player()->HealthPercent() < 50)
+		{
+			for (auto enemy : GEntityList->GetAllHeros(false, true))
+			{
+				if (enemy->IsValidTarget(GEntityList->Player(), 300) && enemy->IsMelee() && RGapCloser->Enabled() && ValidUlt(enemy))
+				{
+					if (Predic->Enabled())
+					{
+						R->CastOnTarget(enemy, kHitChanceHigh);
+					}
+					else
+					{
+						R->CastOnTarget(enemy, kHitChanceMedium);
+					}
+				}
+			}
+		}
 	}
-
-	static void LaneClear()
-	{
-	}
-
+	
 	static void Drawing()
 	{
+		if (DrawReady->Enabled())
+		{
+			if (W->IsReady() && DrawW->Enabled()) { GRender->DrawOutlinedCircle(GEntityList->Player()->GetPosition(), Vec4(255, 0, 0, 255), W->Range()); }
+			if (E->IsReady() && DrawE->Enabled()) { GRender->DrawOutlinedCircle(GEntityList->Player()->GetPosition(), Vec4(255, 0, 0, 255), E->Range()); }
+		}
+		else
+		{
+			if (DrawW->Enabled()) { GRender->DrawOutlinedCircle(GEntityList->Player()->GetPosition(), Vec4(255, 0, 0, 255), W->Range()); }
+			if (DrawE->Enabled()) { GRender->DrawOutlinedCircle(GEntityList->Player()->GetPosition(), Vec4(255, 0, 0, 255), E->Range()); }
+		}
 	}
 
 	static void OnGapcloser(GapCloserSpell const& args)
@@ -313,6 +401,12 @@ public:
 		
 	}
 	
-
+	static void OnInterruptible(InterruptibleSpell const& Args)
+	{
+		if (RInterrupter->Enabled() && GetDistance(GEntityList->Player(), Args.Target) < 1800 && R->IsReady())
+		{
+			R->CastOnTarget(Args.Target, kHitChanceHigh);
+		}
+	}
 	
 };
