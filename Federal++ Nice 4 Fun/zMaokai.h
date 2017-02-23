@@ -18,10 +18,10 @@ public:
 			RangeQ = ComboSettings->AddInteger("Q max Range", 0, 600, 600);
 			ComboW = ComboSettings->CheckBox("Use W", true);
 			ComboE = ComboSettings->CheckBox("Use E", true);
-			ComboR = ComboSettings->CheckBox("Use R", true);			
-			REnemies = ComboSettings->AddInteger("Use R min", 1, 5, 2);
-			ComboRKill = ComboSettings->CheckBox("Cancel Ult If Target Killable", true);
-			UltPercent = ComboSettings->AddInteger("Cancel Ult If Mana", 0, 100, 30);
+			ComboR = ComboSettings->CheckBox("Auto R", true);			
+			REnemies = ComboSettings->AddInteger("Auto R min", 1, 5, 2);
+			UltEnemies = ComboSettings->CheckBox("Stop Ult If no Enemys", true);
+			UltPercent = ComboSettings->AddInteger("Stop Ult If Mana <", 0, 100, 30);
 		}
 
 		HarassSettings = MainMenu->AddMenu("Harass Settings");
@@ -64,34 +64,49 @@ public:
 		{
 			GEntityList->Player()->SetSkinId(MiscSkin->GetInteger());
 		}
+	}	
+
+	static bool maoR()
+	{
+		if (GEntityList->Player()->HasBuff("MaokaiDrain3"))
+		{
+			return true;
+		}
+
+		return false;
 	}
 
-	static void Automatic()
+	static int maoRStack()
 	{
+		//return R->Ammo;			
+	}
+
+	static void AutoUlt()
+	{
+		auto inimigos = CountEnemy(GEntityList->Player()->GetPosition(), 600);
+		auto inimigos2 = CountEnemy(GEntityList->Player()->GetPosition(), E->Range());
+
+		if (ComboR->Enabled() && R->IsReady())
+		{
+
+			if (!maoR() && REnemies->GetInteger() <= inimigos && GEntityList->Player()->ManaPercent() >= UltPercent->Enabled())
+			{
+				R->CastOnPlayer();
+			}
+
+			else if (maoR() && (GEntityList->Player()->ManaPercent() < UltPercent->Enabled() || UltEnemies->Enabled() && inimigos2 < 1))
+			{
+				R->CastOnPlayer();
+			}
+		}
 	}
 
 	static void Combo()
 	{
 		auto target = GTargetSelector->FindTarget(QuickestKill, SpellDamage, E->Range());
+
 		if (target != nullptr && target->IsValidTarget() && !target->IsInvulnerable() && !target->IsDead())
 		{
-
-			/*Obj_AI_Hero targetR = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Magical);
-			var rmana = Config.Item("Rmana").GetValue<Slider>().Value;
-			if (R.IsReady() && player.ManaPercent < rmana && targetR.IsValidTarget(R.Range - 30))
-			{
-			bool enoughEnemies = Config.Item("Rene").GetValue<Slider>().Value <= player.CountEnemiesInRange(R.Range - 50);
-
-			if (maoR && ((Config.Item("Rkill").GetValue<bool>() && Damage.GetSpellDamage(player, targetR, SpellSlot.R) + player.CalcDamage(target, Damage.DamageType.Magical, maoRStack) > targetR.Health) || (!enoughEnemies)))
-			{
-			R.Cast();
-			}
-			if (targetR != null && !maoR && player.ManaPercent > rmana && (enoughEnemies || R.IsInRange(targetR)))
-			{
-			R.Cast();
-			}
-			}*/
-
 			if (W->IsReady() && target->IsValidTarget(GEntityList->Player(), W->Range()) && ComboW->Enabled())
 			{
 				W->CastOnUnit(target);
@@ -107,10 +122,10 @@ public:
 				Q->CastOnTarget(target, kHitChanceHigh);
 			}
 
-			/*var rDmg = player.GetSpellDamage(target, SpellSlot.R);
-			if (Config.Item("Rkill").GetValue<bool>() && target.HealthPercent <= rDmg)
+			/*auto rDmg = GDamage->GetSpellDamage(GEntityList->Player(), target, kSlotR);
+			if (ComboRKill->Enabled() && target->HealthPercent() <= rDmg)
 			{
-			R.Cast();
+				R->CastOnPlayer();
 			}*/
 		}
 		

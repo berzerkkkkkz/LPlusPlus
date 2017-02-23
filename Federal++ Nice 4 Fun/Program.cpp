@@ -712,8 +712,9 @@ public:
 		if (GOrbwalking->GetOrbwalkingMode() == kModeLaneClear)
 		{
 			
-		}
+		}		
 		
+		Maokai().AutoUlt();
 		Maokai().SkinChanger();
 		AutoSmite().AutomaticSmite();
 		AutoSmite().KeyPressSmite();
