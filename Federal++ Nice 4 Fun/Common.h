@@ -370,6 +370,17 @@ inline bool IsUnderTurretPos(Vec3 source)
 	return false;
 }
 
+inline bool IsUnderTurretPosAlly(Vec3 source)
+{
+	for (auto turret : GEntityList->GetAllTurrets(true, false))
+	{
+		if (GetDistanceVectors(turret->GetPosition(), source) < 800)
+			return true;
+	}
+
+	return false;
+}
+
 static bool IsKeyDown(IMenuOption *menuOption)
 {
 	return GetAsyncKeyState(menuOption->GetInteger()) & 0x8000;

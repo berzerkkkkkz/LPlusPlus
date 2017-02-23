@@ -73,6 +73,7 @@ IMenuOption* MinionsQ;
 IMenuOption* JungleQ;
 IMenuOption* CharmedQ;
 IMenuOption* ComboEW;
+IMenuOption* Troll;
 
 IMenuOption* ComboW;
 IMenuOption* HarassW;

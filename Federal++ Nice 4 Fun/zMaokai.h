@@ -48,6 +48,14 @@ public:
 			JungleMana = JungleClearSettings->AddInteger("Minimum MP% to jungle", 1, 100, 20);
 		}
 
+		MiscSettings = MainMenu->AddMenu("Misc Settings");
+		{
+			QGapCloser = MiscSettings->CheckBox("Automatically Q GapCloser", true);
+			QInterrupter = MiscSettings->CheckBox("Automatically Interrupt Spell", true);
+			CCedQ = MiscSettings->CheckBox("Auto W under Turrets", true);
+			Troll = MiscSettings->CheckBox("Troll laugh?", false);
+		}
+
 		DrawingSettings = MainMenu->AddMenu("Drawing Settings");
 		{
 			DrawReady = DrawingSettings->CheckBox("Draw Only Ready Spells", true);
@@ -118,6 +126,24 @@ public:
 		}
 	}
 
+	static void AutoUnderTower()
+	{
+		auto target = GTargetSelector->FindTarget(QuickestKill, SpellDamage, W->Range());
+		
+		if (target != nullptr && target->IsValidTarget() && !target->IsInvulnerable() && !target->IsDead())
+		{
+			if (IsUnderTurretPosAlly(target->GetPosition()) && W->IsReady() && CCedQ->Enabled() && CountAlly(GEntityList->Player()->GetPosition(), E->Range()) + 1 >= CountEnemy(GEntityList->Player()->GetPosition(), E->Range()))
+			{
+				W->CastOnUnit(target);
+
+				if (Troll->Enabled())
+				{				
+					GGame->Say("/l");
+				}
+			}
+		}
+	}
+
 	static void Combo()
 	{
 		auto target = GTargetSelector->FindTarget(QuickestKill, SpellDamage, E->Range());
@@ -174,11 +200,6 @@ public:
 				E->CastOnTarget(target, kHitChanceHigh);
 			}			
 		}
-	}
-
-
-	static void LastHit()
-	{
 	}
 
 	static void JungleClear()
@@ -298,21 +319,26 @@ public:
 
 	static void OnGapcloser(GapCloserSpell const& args)
 	{
+		if (QGapCloser->Enabled() && Q->IsReady() && !args.IsTargeted && GetDistanceVectors(GEntityList->Player()->GetPosition(), args.EndPosition) < Q->Range())
 
+		{
+			Q->CastOnTarget(args.Sender, kHitChanceMedium);
+		}
 	}
 
-	static void OnAfterAttack(IUnit* source, IUnit* target)
+	static void OnInterruptible(InterruptibleSpell const& Args)
 	{
+		if (QInterrupter->Enabled() && GetDistance(GEntityList->Player(), Args.Target) < Q->Range())
+		{
+			if (W->IsReady())
+			{
+				W->CastOnUnit(Args.Target);
+			}
 
-	}
-
-	static void OnCreateObject(IUnit* Source)
-	{
-
-	}
-
-	static void OnDeleteObject(IUnit* Source)
-	{
-
+			if (!W->IsReady() && Q->IsReady())
+			{
+				Q->CastOnTarget(Args.Target, kHitChanceHigh);
+			}
+		}
 	}
 };

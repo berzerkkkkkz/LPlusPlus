@@ -716,13 +716,14 @@ public:
 		}		
 		
 		Maokai().AutoUlt();
+		Maokai().AutoUnderTower();
 		Maokai().SkinChanger();
 		AutoSmite().AutomaticSmite();
 		AutoSmite().KeyPressSmite();
 	}
 	void OnGapCloser(GapCloserSpell const& Args) override
 	{
-		
+		Maokai().OnGapcloser(Args);		
 	}
 	void OnAfterAttack(IUnit* Source, IUnit* Target) override
 	{
@@ -745,7 +746,7 @@ public:
 
 	void OnInterruptible(InterruptibleSpell const& Args) override
 	{
-
+		Maokai().OnInterruptible(Args);
 	}
 
 	void OnDash(UnitDash* Args) override
