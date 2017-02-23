@@ -183,6 +183,68 @@ public:
 
 	static void JungleClear()
 	{
+		if (JungleMana->GetInteger() < GEntityList->Player()->ManaPercent())
+		{
+			for (auto minion : GEntityList->GetAllMinions(false, false, true))
+			{
+
+				if (JungleE->Enabled() && E->IsReady() && !FoundMinions(E->Range()) && FoundMinionsNeutral(Q->Range()))
+				{
+
+					if (minion != nullptr && !minion->IsDead() && GEntityList->Player()->IsValidTarget(minion, E->Range()))
+					{
+						if (strstr(minion->GetObjectName(), "Dragon") || strstr(minion->GetObjectName(), "Baron") ||
+							strstr(minion->GetObjectName(), "Crab") || strstr(minion->GetObjectName(), "RiftHerald"))
+						{
+							if (GEntityList->Player()->IsValidTarget(minion, 400))
+							{
+								E->CastOnUnit(minion);
+							}
+						}
+						else
+						{
+							E->CastOnUnit(minion);
+						}
+					}
+				}
+
+				else if (JungleQ->Enabled() && Q->IsReady() && GEntityList->Player()->ManaPercent() >= JungleMana->GetInteger() && !FoundMinions(E->Range()) && FoundMinionsNeutral(Q->Range()))
+				{
+					if (minion != nullptr && !minion->IsDead() && GEntityList->Player()->IsValidTarget(minion, Q->Range()))
+					{
+						Vec3 posQ;
+						int hitQ;
+
+						if (strstr(minion->GetObjectName(), "Dragon") || strstr(minion->GetObjectName(), "Baron") ||
+							strstr(minion->GetObjectName(), "Crab") || strstr(minion->GetObjectName(), "RiftHerald"))
+						{
+							GPrediction->FindBestCastPosition(Q->Range() - 500, Q->Radius(), true, true, false, posQ, hitQ);
+						}
+						else
+						{
+							GPrediction->FindBestCastPosition(Q->Range() - 50, Q->Radius(), true, true, false, posQ, hitQ);
+						}
+
+						if (hitQ > 1)
+						{
+							Q->CastOnPosition(posQ);
+						}
+						else
+						{
+							Q->CastOnUnit(minion);
+						}
+					}
+				}
+
+				if (JungleW->Enabled() && W->IsReady() && GEntityList->Player()->ManaPercent() >= JungleMana->GetInteger() && !FoundMinions(E->Range()) && FoundMinionsNeutral(W->Range()))
+				{
+					if (minion != nullptr && !minion->IsDead() && GEntityList->Player()->IsValidTarget(minion, W->Range()))
+					{
+						W->CastOnPlayer();
+					}
+				}
+			}
+		}
 	}
 
 	static void LaneClear()
