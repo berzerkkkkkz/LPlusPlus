@@ -711,7 +711,7 @@ public:
 		}
 		if (GOrbwalking->GetOrbwalkingMode() == kModeLaneClear)
 		{
-			
+			Maokai().LaneClear();			
 		}		
 		
 		Maokai().AutoUlt();

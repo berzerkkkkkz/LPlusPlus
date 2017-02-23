@@ -31,6 +31,23 @@ public:
 			HarassMana = HarassSettings->AddInteger("Minimum MP% to Harass", 1, 100, 60);
 		}
 
+		LaneClearSettings = MainMenu->AddMenu("LaneClear Settings");
+		{
+			LaneClearQ = LaneClearSettings->CheckBox("Use Q in laneclear", true);			
+			MinionsQ = LaneClearSettings->AddInteger("Minimum minions to Q in laneclear", 1, 10, 4);
+			LaneClearE = LaneClearSettings->CheckBox("Use E in laneclear", true);
+			MinionsE = LaneClearSettings->AddInteger("Minimum minions to W in laneclear", 1, 10, 6);			
+			LaneClearMana = LaneClearSettings->AddInteger("Minimum MP% to laneclear", 1, 100, 40);
+		}
+
+		JungleClearSettings = MainMenu->AddMenu("JungleClear Settings");
+		{
+			JungleQ = JungleClearSettings->CheckBox("Use Q to jungle", true);			
+			JungleW = JungleClearSettings->CheckBox("Use W to jungle", true);
+			JungleE = JungleClearSettings->CheckBox("Use E to jungle", true);
+			JungleMana = JungleClearSettings->AddInteger("Minimum MP% to jungle", 1, 100, 20);
+		}
+
 		DrawingSettings = MainMenu->AddMenu("Drawing Settings");
 		{
 			DrawReady = DrawingSettings->CheckBox("Draw Only Ready Spells", true);
@@ -170,6 +187,35 @@ public:
 
 	static void LaneClear()
 	{
+		if (GEntityList->Player()->ManaPercent() > LaneClearMana->GetInteger())
+		{
+			for (auto minion : GEntityList->GetAllMinions(false, true, false))
+			{
+				if (LaneClearQ->Enabled() && Q->IsReady() && !FoundMinionsNeutral(E->Range() + 100) && GetMinionsInRange(GEntityList->Player()->GetPosition(), Q->Range()) >= MinionsQ->GetInteger())
+				{
+					Vec3 pos;
+					int count;
+					Q->FindBestCastPosition(true, true, pos, count);
+
+					if (count >= MinionsQ->GetInteger() && Q->CastOnPosition(pos))
+					{
+						return;
+					}
+				}
+
+				if (LaneClearE->Enabled() && E->IsReady() && !FoundMinionsNeutral(E->Range() + 100) && GetMinionsInRange(GEntityList->Player()->GetPosition(), E->Range()) >= MinionsE->GetInteger())
+				{
+					Vec3 pos;
+					int count;
+					E->FindBestCastPosition(true, true, pos, count);
+
+					if (count >= MinionsE->GetInteger() && E->CastOnPosition(pos))
+					{
+						return;
+					}
+				}
+			}
+		}
 	}
 
 	static void Drawing()
