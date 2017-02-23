@@ -19,7 +19,18 @@ public:
 			ComboR = ComboSettings->CheckBox("Use R KS combo R + W + AA", true);
 			UltEnemies = ComboSettings->CheckBox("Auto R Aoe", true);
 			SemiManualKey = ComboSettings->AddKey("Semi-manual cast R key", 71);
-		}
+
+			/*for (auto enemy : GEntityList->GetAllHeros(false, true))
+			{				
+				std::string szMenuName = "Dont Ult - " + std::string(enemy->ChampionName());
+				MenuDontUlt[enemy->GetNetworkId()] = ComboSettings->CheckBox(szMenuName.c_str(), true);				
+			}
+
+			if (MenuDontUlt[target->GetNetworkId()]->Enabled())
+			{
+				//code
+			}*/
+		}				
 
 		HarassSettings = MainMenu->AddMenu("Harass Settings");
 		{			

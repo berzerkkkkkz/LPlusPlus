@@ -1,6 +1,7 @@
 #pragma once
 #include "PluginSDK.h"
 #include <list>
+#include <map>
 
 ISpell2* Q;
 ISpell2* W;
@@ -71,6 +72,7 @@ IMenuOption* RangeQ;
 IMenuOption* MinionsQ;
 IMenuOption* JungleQ;
 IMenuOption* CharmedQ;
+IMenuOption* ComboEW;
 
 IMenuOption* ComboW;
 IMenuOption* HarassW;
@@ -251,6 +253,7 @@ IUnit* EMissile;
 
 //std::vector<IUnit*> axeList;
 std::list<IUnit*> axeListTeste;
+std::map<int, IMenuOption*> MenuDontUlt;
 
 bool FoundSmite = false;
 int tempaxe = 0;
