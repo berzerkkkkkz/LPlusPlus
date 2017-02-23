@@ -1076,7 +1076,7 @@ PLUGIN_API void OnLoad(IPluginSDK* PluginSDK)
 	LoadChampion();
 	pChampion->OnLoad();	
 	GRender->NotificationEx(Color::LightBlue().Get(), 2, true, true, "Welcome to Federal++ Nice 4 Fun!");
-	GRender->NotificationEx(Color::LightBlue().Get(), 3, true, true, "Sup Champions: Ahri, Ashe, Draven, Hecarim, Nocturne, Olaf, Dr. Mundo");
+	GRender->NotificationEx(Color::LightBlue().Get(), 3, true, true, "Sup Champions: Ahri, Ashe, Draven, Hecarim, Maokai, Nocturne, Olaf, Dr. Mundo");
 }
 
 // Called when plugin is unloaded
