@@ -62,7 +62,9 @@ public:
 		{
 			EGapCloser = MiscSettings->CheckBox("Automatically E GapCloser", true);
 			EInterrupter = MiscSettings->CheckBox("Automatically E Interrupt Spell", true);
-			CCedQ = MiscSettings->CheckBox("Auto Q When Enemies Cant Move", true);			
+			CCedQ = MiscSettings->CheckBox("Auto Q When Enemies Cant Move", true);
+			CheckShield = MiscSettings->CheckBox("No Charm (BlackShield, Banshee)", true);
+			
 		}
 		
 		DrawingSettings = MainMenu->AddMenu("Drawing Settings");
@@ -254,7 +256,14 @@ public:
 
 		if (ComboE->Enabled() && E->IsReady() && target->IsValidTarget(GEntityList->Player(), E->Range() - 50))
 		{
-			if (!target->HasBuff("BlackShield"))
+			if (CheckShield->Enabled())
+			{
+				if (CheckShielded(target))
+				{
+					E->CastOnTarget(target, kHitChanceHigh);
+				}
+			}
+			else
 			{
 				E->CastOnTarget(target, kHitChanceHigh);
 			}
@@ -284,7 +293,14 @@ public:
 
 		if (HarassE->Enabled() && E->IsReady() && target->IsValidTarget(GEntityList->Player(), E->Range() - 50))
 		{
-			if (!target->HasBuff("BlackShield"))
+			if (CheckShield->Enabled())
+			{
+				if (CheckShielded(target))
+				{
+					E->CastOnTarget(target, kHitChanceHigh);
+				}
+			}
+			else
 			{
 				E->CastOnTarget(target, kHitChanceHigh);
 			}

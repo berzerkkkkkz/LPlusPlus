@@ -216,6 +216,7 @@ IMenuOption* UseItems;
 IMenuOption* AutoSmites;
 IMenuOption* AutoHarass;
 IMenuOption* AntiDash;
+IMenuOption* CheckShield;
 
 IMenuOption* QD;
 IMenuOption* WD;
