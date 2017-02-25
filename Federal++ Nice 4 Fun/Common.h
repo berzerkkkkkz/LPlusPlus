@@ -337,6 +337,20 @@ inline int CountMinions(Vec3 Location, int range)
 	 return (Count);
  }
 
+inline int CountMinionsNeutral(Vec3 Location, int range)
+{
+	int Count = 0;
+
+	for (auto Minions : GEntityList->GetAllMinions(false, false, true))
+	{
+		if ((Minions->GetPosition() - Location).Length() < range && Minions->IsValidTarget() && !Minions->IsDead())
+		{
+			Count++;
+		}
+	}
+	return (Count);
+}
+
 inline float GetDistance(IUnit* source, IUnit* target)
 {
 	auto x1 = source->GetPosition().x;
@@ -450,3 +464,41 @@ inline bool CanMove(IUnit* target)
 
 }
 
+inline bool CheckWalls(IUnit* player, IUnit* enemy)
+{
+	auto distance = GetDistance(player, enemy);
+
+	for (auto i = 1; i < 6; i++)
+	{		
+		Vec3 position;
+		Vec3 pPos = GEntityList->Player()->GetPosition();
+		auto delay = E->GetDelay() + distance / E->Speed();
+		GPrediction->GetFutureUnitPosition(enemy, delay, true, position);
+
+		Vec3 PositionTarget = pPos.Extend(position, distance + 60 * i);
+
+		if (GNavMesh->IsPointWall(PositionTarget))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+static bool CheckWallsVectores(Vec3 from, Vec3 to)
+{
+	auto steps = 6.f;
+	auto stepLength = GetDistanceVectors(from, to) / steps;
+
+	for (auto i = 1; i < steps + 1; i++)
+	{
+		auto PositionTarget = from.Extend(to, stepLength * i);
+		
+		if (GNavMesh->IsPointWall(PositionTarget))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}

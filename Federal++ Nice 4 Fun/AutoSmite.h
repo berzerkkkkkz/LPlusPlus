@@ -238,7 +238,9 @@ public:
 							strstr(minion->GetObjectName(), "Gromp") ||
 							strstr(minion->GetObjectName(), "Crab") ||
 							strstr(minion->GetObjectName(), "Razorbeak3") ||
+							strstr(minion->GetObjectName(), "Razorbeak9") ||
 							strstr(minion->GetObjectName(), "SRU_Krug11") ||
+							strstr(minion->GetObjectName(), "SRU_Krug5") ||
 							strstr(minion->GetObjectName(), "SRU_Murkwolf2") ||
 							strstr(minion->GetObjectName(), "Red") ||
 							strstr(minion->GetObjectName(), "Blue") ||

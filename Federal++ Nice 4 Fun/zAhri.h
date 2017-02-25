@@ -60,7 +60,7 @@ public:
 
 		MiscSettings = MainMenu->AddMenu("Misc Settings");
 		{
-			QGapCloser = MiscSettings->CheckBox("Automatically E GapCloser", true);
+			EGapCloser = MiscSettings->CheckBox("Automatically E GapCloser", true);
 			EInterrupter = MiscSettings->CheckBox("Automatically E Interrupt Spell", true);
 			CCedQ = MiscSettings->CheckBox("Auto Q When Enemies Cant Move", true);			
 		}
@@ -208,21 +208,24 @@ public:
 		{
 			if (!CheckTarget(target)) continue;
 
-			if (KillstealQ->Enabled() && Q->IsReady() && target->IsValidTarget(GEntityList->Player(), Q->Range()) && GDamage->GetSpellDamage(GEntityList->Player(), target, kSlotQ) > target->GetHealth())
+			if (!target->HasBuff("ChronoShift") && Killsteal->Enabled())
 			{
-				Q->CastOnTarget(target, kHitChanceHigh);
-				return;
-			}
+				if (KillstealQ->Enabled() && Q->IsReady() && target->IsValidTarget(GEntityList->Player(), Q->Range()) && GHealthPrediction->GetKSDamage(target, kSlotQ, Q->GetDelay(), false) > target->GetHealth())
+				{
+					Q->CastOnTarget(target, kHitChanceHigh);
+					return;
+				}
 
-			if (KillstealW->Enabled() && W->IsReady() && target->IsValidTarget(GEntityList->Player(), W->Range()) && GDamage->GetSpellDamage(GEntityList->Player(), target, kSlotW) > target->GetHealth())
-			{
-				W->CastOnPlayer();
-				return;
-			}
+				if (KillstealW->Enabled() && W->IsReady() && target->IsValidTarget(GEntityList->Player(), W->Range()) && GHealthPrediction->GetKSDamage(target, kSlotW, W->GetDelay(), false) > target->GetHealth())
+				{
+					W->CastOnPlayer();
+					return;
+				}
 
-			if (KillstealE->Enabled() && E->IsReady() && target->IsValidTarget(GEntityList->Player(), E->Range()) && GDamage->GetSpellDamage(GEntityList->Player(), target, kSlotE) > target->GetHealth())
-			{
-				E->CastOnTarget(target, kHitChanceHigh);
+				if (KillstealE->Enabled() && E->IsReady() && target->IsValidTarget(GEntityList->Player(), E->Range()) && GHealthPrediction->GetKSDamage(target, kSlotE, E->GetDelay(), false) > target->GetHealth())
+				{
+					E->CastOnTarget(target, kHitChanceHigh);
+				}
 			}
 
 			if (AutoHarass->Enabled() && Q->IsReady() && HarassMana->GetInteger() < GEntityList->Player()->ManaPercent() && CheckTarget(target) && target->IsValidTarget(GEntityList->Player(), Q->Range() - 50))
@@ -251,7 +254,10 @@ public:
 
 		if (ComboE->Enabled() && E->IsReady() && target->IsValidTarget(GEntityList->Player(), E->Range() - 50))
 		{
-			E->CastOnTarget(target, kHitChanceHigh);
+			if (!target->HasBuff("BlackShield"))
+			{
+				E->CastOnTarget(target, kHitChanceHigh);
+			}
 		}
 
 		if (ComboW->Enabled() && W->IsReady() && target->IsValidTarget(GEntityList->Player(), R->Range()) && GEntityList->Player()->GetMana() > Q->ManaCost() + E->ManaCost() + W->ManaCost())
@@ -278,7 +284,10 @@ public:
 
 		if (HarassE->Enabled() && E->IsReady() && target->IsValidTarget(GEntityList->Player(), E->Range() - 50))
 		{
-			E->CastOnTarget(target, kHitChanceHigh);
+			if (!target->HasBuff("BlackShield"))
+			{
+				E->CastOnTarget(target, kHitChanceHigh);
+			}
 		}
 
 		if (HarassW->Enabled() && W->IsReady() && target->IsValidTarget(GEntityList->Player(), R->Range()))
@@ -442,7 +451,6 @@ public:
 		}
 	}
 
-
 	static void OnDeleteObject(IUnit* Source)
 	{
 		if (Source->IsEnemy(GEntityList->Player())) { return; }
@@ -465,17 +473,17 @@ public:
 
 		for (auto i : vecBuffs)
 		{
-			//GBuffData->GetBuffName(i);
-			//GGame->PrintChat(GBuffData->GetBuffName(i));
+			GBuffData->GetBuffName(i);
+			GGame->PrintChat(GBuffData->GetBuffName(i));
 
-			if (GEntityList->Player()->HasBuff("AhriTumble"))
+			/*if (GEntityList->Player()->HasBuff("AhriTumble"))
 			{
 				auto buffTime = GBuffData->GetEndTime(GEntityList->Player()->GetBuffDataByName("AhriTumble"));
 
 				
 				GGame->PrintChat("Tenho Buff do Ult");
 				GGame->PrintChat(std::to_string(buffTime - GGame->Time()).data());
-			}
+			}*/
 		}
 	}
 

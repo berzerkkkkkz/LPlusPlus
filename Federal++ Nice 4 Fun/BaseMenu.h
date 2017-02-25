@@ -74,6 +74,11 @@ IMenuOption* JungleQ;
 IMenuOption* CharmedQ;
 IMenuOption* ComboEW;
 IMenuOption* Troll;
+IMenuOption* EinWall;
+IMenuOption* goPassiveC;
+IMenuOption* goPassiveLC;
+IMenuOption* goPassiveH;
+IMenuOption* goPassiveJ;
 
 IMenuOption* ComboW;
 IMenuOption* HarassW;
@@ -106,6 +111,7 @@ IMenuOption* CCedE;
 IMenuOption* RangeE;
 IMenuOption* MinionsE;
 IMenuOption* JungleE;
+IMenuOption* WAllyrisk;
 
 IMenuOption* ComboR;
 IMenuOption* ComboRKill;
@@ -149,6 +155,7 @@ IMenuOption* DrawR;
 IMenuOption* DrawR2;
 IMenuOption* DrawComboDamage;
 IMenuOption* Drawkill;
+IMenuOption* DrawTemp;
 
 IMenuOption* HealthPercent;
 IMenuOption* HealthQ;
@@ -208,6 +215,7 @@ IMenuOption* useRTF;
 IMenuOption* UseItems;
 IMenuOption* AutoSmites;
 IMenuOption* AutoHarass;
+IMenuOption* AntiDash;
 
 IMenuOption* QD;
 IMenuOption* WD;
