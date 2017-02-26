@@ -3,10 +3,13 @@
 #include "zVarus.h"
 #include "zDraven.h"
 #include "zAshe.h"
+#include "Ezreal.h"
 
 // Champions Midlane
 #include "zAhri.h"
 #include "zZiggs.h"
+#include "zLux.h"
+#include "Xerath.h"
 
 
 // Champions Jungle
@@ -17,5 +20,6 @@
 // Champions Toplane
 #include "zDrMundo.h"
 #include "zMaokai.h"
+#include "zPoppy.h"
 
 // Supporte

@@ -92,6 +92,15 @@
     <ClInclude Include="Toxic.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="zLux.h">
+      <Filter>Header Files\Champions\Midlane</Filter>
+    </ClInclude>
+    <ClInclude Include="Xerath.h">
+      <Filter>Header Files\Champions\Midlane</Filter>
+    </ClInclude>
+    <ClInclude Include="Ezreal.h">
+      <Filter>Header Files\Champions\ADC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">

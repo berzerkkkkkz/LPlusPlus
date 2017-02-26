@@ -95,6 +95,7 @@ public:
 			DrawQ = DrawingSettings->CheckBox("Draw Q", true);
 			DrawE = DrawingSettings->CheckBox("Draw E", false);
 			DrawAxe = DrawingSettings->CheckBox("Draw Axe position", true);
+			DrawTemp = DrawingSettings->CheckBox("Draw Axe Time", true);
 			DrawComboDamage = DrawingSettings->CheckBox("Draw combo damage", true);
 		}
 
@@ -141,7 +142,10 @@ public:
 						auto delay = 0.25f + GetDistance(GEntityList->Player(), hero) / 1600;
 						GPrediction->GetFutureUnitPosition(hero, delay, true, position);
 
-						Q->CastOnPosition(position);
+						if (Q->CastOnPosition(position))
+						{
+							return;
+						}
 					}
 				}
 
@@ -150,9 +154,9 @@ public:
 				{
 					auto damage = GHealthPrediction->GetKSDamage(hero, kSlotE, E->GetDelay(), false);
 
-					if (damage + 50 > hero->GetHealth()){
-
-						E->CastOnTarget(hero, kHitChanceMedium);
+					if (damage + 50 > hero->GetHealth() && E->CastOnTarget(hero, kHitChanceMedium))
+					{
+						return;
 					}
 				}				
 			}
@@ -174,7 +178,10 @@ public:
 					auto delay = 0.25f + GetDistance(GEntityList->Player(), hero) / 1600;
 					GPrediction->GetFutureUnitPosition(hero, delay, true, positioncc);
 
-					Q->CastOnPosition(positioncc);
+					if (Q->CastOnPosition(positioncc))
+					{
+						return;
+					}
 				}
 			}
 		}
@@ -271,7 +278,7 @@ public:
 
 				if (Distance < Q->Range())
 				{
-					Q->CastOnPosition(position);
+					Q->CastOnPosition(PositionTarget);
 				}
 			}
 		}
@@ -503,35 +510,45 @@ public:
 
 		if (lastQpos.x > 0 && lastQpos.y > 0)
 		{
-			if (DrawAxe->Enabled()) { GRender->DrawOutlinedCircle(lastQpos, Vec4(255, 255, 0, 255), 100); }
+			if (DrawAxe->Enabled()) {
+				GRender->DrawOutlinedCircle(lastQpos, Vec4(255, 255, 0, 255), 100);
 
-			Vec2 mypos;
-			Vec2 axepos;
-			GGame->Projection(GEntityList->Player()->GetPosition(), &mypos);
-			GGame->Projection(lastQpos, &axepos);
-			GRender->DrawLine(mypos, axepos, Vec4(255, 255, 0, 255));
+				Vec2 mypos;
+				Vec2 axepos;
+				GGame->Projection(GEntityList->Player()->GetPosition(), &mypos);
+				GGame->Projection(lastQpos, &axepos);
+				GRender->DrawLine(mypos, axepos, Vec4(255, 255, 0, 255));
+
+				if (DrawTemp->Enabled())
+				{
+					int temptotal = tempaxe - GGame->Time();
+
+					Vec2 temppox;
+					GGame->Projection(lastQpos, &temppox);
+					static auto message = GRender->CreateFontW("Comic Sans", 20.f, kFontWeightBold);
+					message->SetColor(Vec4(0, 255, 0, 255));
+					message->SetOutline(true);
+					message->Render(temppox.x, temppox.y, std::to_string(temptotal).c_str());					
+				}
+			}
 		}
 	}		
 
 	static void OnGapcloser(GapCloserSpell const& args)
 	{
-		if (args.Sender->IsEnemy(GEntityList->Player()) && args.Sender->IsHero())
+		if (QGapCloser->Enabled() && Q->IsReady() && !args.IsTargeted && GetDistanceVectors(GEntityList->Player()->GetPosition(), args.EndPosition) < Q->Range())
 		{
-			if (QGapCloser->Enabled() && Q->IsReady() && !args.IsTargeted && GetDistanceVectors(GEntityList->Player()->GetPosition(), args.EndPosition) < Q->Range())
+			if (args.Sender != nullptr && args.Sender->IsValidTarget(GEntityList->Player(), Q->Range()) && !args.Sender->IsInvulnerable() && !args.Sender->IsDead())
 			{
-				if (args.Sender != nullptr && args.Sender->IsValidTarget() && !args.Sender->IsInvulnerable() && !args.Sender->IsDead())
+				auto Distance = GetDistanceVectors(GEntityList->Player()->GetPosition(), args.EndPosition);
+
+				Vec3 position;
+				auto delay = 0.25f + Distance / 1600;
+				GPrediction->GetFutureUnitPosition(args.Sender, delay, true, position);
+
+				if (Distance < Q->Range() && Q->CastOnPosition(position))
 				{
-
-					float Distance = GetDistanceVectors(GEntityList->Player()->GetPosition(), args.EndPosition);
-
-					Vec3 position;
-					auto delay = 0.25f + Distance / 1600;
-					GPrediction->GetFutureUnitPosition(args.Sender, delay, true, position);
-
-					if (Distance < Q->Range())
-					{
-						Q->CastOnPosition(position);
-					}
+					return;
 				}
 			}
 		}
@@ -570,7 +587,7 @@ public:
 			lastQpos = Source->GetPosition();
 
 			temp = true;
-			tempaxe = GGame->Time() + 8;			
+			tempaxe = GGame->Time() + 9;			
 		}
 	}
 

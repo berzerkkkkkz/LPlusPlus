@@ -144,10 +144,24 @@ public:
 		return (*this - vecOther).Length();
 	}
 
-	Vec2 Extend(Vec2 const Other, float Len)
+	Vec2 Extend(Vec2 const Other, float Len) const
 	{
 		Vec2 vecThis = *this;
 		return (vecThis + (Other - vecThis).VectorNormalize() * Len);
+	}
+
+	Vec2 RotateAroundPoint(const Vec2& Point, float rotation) const
+	{
+		auto relativeSelf = (*this - Point);
+
+		auto newX = (relativeSelf.x * cos(rotation)) - (relativeSelf.y * sin(rotation));
+		auto newY = (relativeSelf.x * sin(rotation)) + (relativeSelf.y * cos(rotation));
+
+		Vec2 newVec(newX, newY);
+
+		newVec = newVec + Point;
+
+		return newVec;
 	}
 
 	float Length()
@@ -362,11 +376,11 @@ public:
 		return (*this - vecOther).Length();
 	}
 
-	Vec3 Extend(Vec3 const Other, float Len)
+	Vec3 Extend(Vec3 const Other, float Len) const
 	{
 		Vec3 vecThis = *this;
 		return (vecThis + (Other - vecThis).VectorNormalize() * Len);
-	}
+	}	
 
 	float Length()
 	{

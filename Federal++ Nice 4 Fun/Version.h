@@ -1,6 +1,7 @@
 #pragma once
 #include "PluginSDK.h"
 #include "Color.h"
+#include <string>
 
 inline bool VersionChecker()
 {
@@ -40,4 +41,6 @@ inline void RunVersionChecker()
 		GRender->NotificationEx(Color::LightBlue().Get(), 2, true, true, "You have an Old Version Go Download Latest Plugin");
 	}
 }
+
+
 

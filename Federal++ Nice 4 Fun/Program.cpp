@@ -4,6 +4,7 @@
 #include "Champions.h"
 #include "AutoSmite.h";
 #include "Toxic.h";
+#include "Version.h"
 
 
 #pragma region Events
@@ -155,7 +156,7 @@ public:
 
 		if (GOrbwalking->GetOrbwalkingMode() == kModeCombo)
 		{
-
+			Ziggs().Combo();
 		}
 
 		if (GOrbwalking->GetOrbwalkingMode() == kModeLaneClear)
@@ -163,7 +164,7 @@ public:
 
 		}
 		
-		//Ziggs().SkinChanger();
+		Ziggs().SkinChanger();
 		Ziggs().LogicW();
 		Ziggs().CheckKeyPresses();
 	}
@@ -430,6 +431,7 @@ public:
 		
 		Ahri().Automatic();		
 		Ahri().SkinChanger();		
+		//Ahri().GetBuffName();
 	}
 
 	void OnGapCloser(GapCloserSpell const& Args) override
@@ -467,6 +469,99 @@ public:
 	{
 		Ahri().OnProcessSpell(Args);
 		
+	}
+
+	void OnExitVisible(IUnit* Source) override
+	{
+
+	}
+
+	void OnUnitDeath(IUnit* Source) override
+	{
+
+	}
+};
+
+class cLux : public IChampion
+{
+public:
+
+	virtual void OnLoad() override
+	{
+		//Message().JungleLaneSeries();
+		Message().ChampionLoadMessage();
+		Lux().InitializeMenu();
+		Lux().LoadSpells();		
+	}
+
+	virtual void OnRender() override
+	{
+		Lux().Drawing();		
+	}
+
+	virtual void OnGameUpdate() override
+	{
+		if (GEntityList->Player()->IsDead() && GEntityList->Player()->IsRecalling())
+		{
+			return;
+		}
+
+		if (GOrbwalking->GetOrbwalkingMode() == kModeCombo)
+		{	
+			Lux().Combo();
+		}
+		if (GOrbwalking->GetOrbwalkingMode() == kModeMixed)
+		{
+			Lux().Harass();
+		}
+		if (GOrbwalking->GetOrbwalkingMode() == kModeLaneClear)
+		{
+			Lux().JungleClear();
+			Lux().LaneClear();
+		}
+
+		Lux().SkinChanger();
+		Lux().AutoRKS();
+		Lux().AutoCCed();
+		Lux().KsJungle();
+	}
+	void OnGapCloser(GapCloserSpell const& Args) override
+	{
+		Lux().OnGapcloser(Args);
+	}
+	void OnAfterAttack(IUnit* Source, IUnit* Target) override
+	{
+
+	}
+	void OnLevelUp(IUnit* Source, int NewLevel) override
+	{
+
+	}
+
+	void OnCreateObject(IUnit* Source) override
+	{
+		Lux().OnCreateObject(Source);
+
+	}
+
+	void OnDeleteObject(IUnit* Source) override
+	{
+		Lux().OnDeleteObject(Source);
+	}
+
+	void OnInterruptible(InterruptibleSpell const& Args) override
+	{
+		
+	}
+
+	void OnDash(UnitDash* Args) override
+	{
+		
+	}
+
+	void OnProcessSpell(CastedSpell const& Args) override
+	{
+		Lux().OnProcessSpell(Args);
 	}
 
 	void OnExitVisible(IUnit* Source) override
@@ -769,6 +864,102 @@ public:
 	}
 };
 
+class cPoppy : public IChampion
+{
+public:
+
+	virtual void OnLoad() override
+	{
+		//Message().JungleLaneSeries();
+		Message().ChampionLoadMessage();
+		Poppy().InitializeMenu();
+		Poppy().LoadSpells();
+
+		AutoSmite().SpellsSmite();
+		AutoSmite().MenuSmite();
+	}
+
+	virtual void OnRender() override
+	{
+		Poppy().Drawing();
+		AutoSmite().DrawingsSmite();
+	}
+
+	virtual void OnGameUpdate() override
+	{
+		if (GEntityList->Player()->IsDead() && GEntityList->Player()->IsRecalling())
+		{
+			return;
+		}
+
+		if (GOrbwalking->GetOrbwalkingMode() == kModeCombo)
+		{
+			Poppy().Combo();
+		}
+		if (GOrbwalking->GetOrbwalkingMode() == kModeMixed)
+		{
+			Poppy().Harass();
+		}
+		if (GOrbwalking->GetOrbwalkingMode() == kModeLaneClear)
+		{
+			Poppy().LaneClear();
+			Poppy().JungleClear();
+		}
+		
+		Poppy().SkinChanger();
+		AutoSmite().AutomaticSmite();
+		AutoSmite().KeyPressSmite();
+	}
+	void OnGapCloser(GapCloserSpell const& Args) override
+	{
+		Poppy().OnGapcloser(Args);
+	}
+	void OnAfterAttack(IUnit* Source, IUnit* Target) override
+	{
+
+	}
+	void OnLevelUp(IUnit* Source, int NewLevel) override
+	{
+
+	}
+
+	void OnCreateObject(IUnit* Source) override
+	{
+		Poppy().OnCreateObject(Source);
+
+	}
+
+	void OnDeleteObject(IUnit* Source) override
+	{
+		Poppy().OnDeleteObject(Source);
+	}
+
+	void OnInterruptible(InterruptibleSpell const& Args) override
+	{
+		Poppy().OnInterruptible(Args);
+	}
+
+	void OnDash(UnitDash* Args) override
+	{
+		Poppy().OnDash(Args);
+	}
+
+	void OnProcessSpell(CastedSpell const& Args) override
+	{
+
+	}
+
+	void OnExitVisible(IUnit* Source) override
+	{
+
+	}
+
+	void OnUnitDeath(IUnit* Source) override
+	{
+
+	}
+};
+
 class cNocturne : public IChampion
 {
 public:
@@ -959,6 +1150,195 @@ public:
 	}
 };
 
+class cEzreal : public IChampion
+{
+public:
+
+	virtual void OnLoad() override
+	{
+		//Message().MidLaneSeries();
+		Message().ChampionLoadMessage();
+		Ezreal().InitializeSpells();
+		Ezreal().InitializeMenu();
+	}
+
+	virtual void OnRender() override
+	{
+		Ezreal().Drawing();
+	}
+
+	virtual void OnGameUpdate() override
+	{
+		if (GEntityList->Player()->IsDead() && GEntityList->Player()->IsRecalling())
+		{
+			return;
+		}
+
+		if (GOrbwalking->GetOrbwalkingMode() == kModeCombo)
+		{
+			Ezreal().Combo();
+		}
+
+		if (GOrbwalking->GetOrbwalkingMode() == kModeMixed)
+		{
+			Ezreal().Harass();
+			Ezreal().LastHit();
+		}
+
+		if (GOrbwalking->GetOrbwalkingMode() == kModeLaneClear)
+		{
+			Ezreal().LaneClear();
+		}
+
+		Ezreal().Automatic();
+		Ezreal().EAntiMelee();
+		Ezreal().StackMuneItem();
+		Ezreal().KsJungle();
+		Ezreal().SkinChanger();
+	}
+
+	void OnGapCloser(GapCloserSpell const& Args) override
+	{
+		Ezreal().OnGapcloser(Args);
+	}
+	void OnInterruptible(InterruptibleSpell const& Args) override
+	{
+
+	}
+	void OnAfterAttack(IUnit* Source, IUnit* Target) override
+	{
+		Ezreal().OnAfterAttack(Source, Target);
+	}
+	void OnLevelUp(IUnit* Source, int NewLevel) override
+	{
+
+	}
+
+	void OnCreateObject(IUnit* Source) override
+	{
+
+	}
+
+	void OnDeleteObject(IUnit* Source) override
+	{
+
+	}
+
+	void OnDash(UnitDash* Args) override
+	{
+	}
+
+	void OnProcessSpell(CastedSpell const& Args) override
+	{
+		Ezreal().OnProcessSpell(Args);
+	}
+
+	void OnExitVisible(IUnit* Source) override
+	{
+
+	}
+
+	void OnUnitDeath(IUnit* Source) override
+	{
+
+	}
+};
+
+class cXerath : public IChampion
+{
+public:
+
+	virtual void OnLoad() override
+	{
+		//Message().MidLaneSeries();
+		Message().ChampionLoadMessage();
+		Xerath().InitializeMenu();
+		Xerath().InitializeSpells();
+
+		AutoSmite().SpellsSmite();
+		AutoSmite().MenuSmite();
+	}
+
+	virtual void OnRender() override
+	{
+		Xerath().Drawings();
+		AutoSmite().DrawingsSmite();
+	}
+
+	virtual void OnGameUpdate() override
+	{
+		if (GEntityList->Player()->IsDead() && GEntityList->Player()->IsRecalling())
+		{
+			return;
+		}
+
+		if (GOrbwalking->GetOrbwalkingMode() == kModeCombo)
+		{
+			Xerath().Combo();
+		}
+		if (GOrbwalking->GetOrbwalkingMode() == kModeMixed)
+		{
+			Xerath().Harass();
+		}
+		if (GOrbwalking->GetOrbwalkingMode() == kModeLaneClear)
+		{
+			Xerath().JungleClear();
+			Xerath().LaneClear();
+		}
+
+		Xerath().Ultimate();
+		Xerath().Automatic();
+		Xerath().SkinChanger();
+		AutoSmite().AutomaticSmite();
+		AutoSmite().KeyPressSmite();
+	}
+	void OnGapCloser(GapCloserSpell const& Args) override
+	{
+		Xerath().OnGapcloser(Args);
+	}
+	void OnAfterAttack(IUnit* Source, IUnit* Target) override
+	{
+
+	}
+	void OnLevelUp(IUnit* Source, int NewLevel) override
+	{
+
+	}
+
+	void OnCreateObject(IUnit* Source) override
+	{
+
+	}
+
+	void OnDeleteObject(IUnit* Source) override
+	{
+
+	}
+	void OnInterruptible(InterruptibleSpell const& Args) override
+	{
+		Xerath().OnInterruptible(Args);
+	}
+
+	void OnDash(UnitDash* Args) override
+	{
+	}
+
+	void OnProcessSpell(CastedSpell const& Args) override
+	{
+		Xerath().OnProcessSpell(Args);
+	}
+
+	void OnExitVisible(IUnit* Source) override
+	{
+
+	}
+
+	void OnUnitDeath(IUnit* Source) override
+	{
+
+	}
+};
+
 
 IChampion* pChampion = nullptr;
 
@@ -1017,6 +1397,11 @@ PLUGIN_EVENT(void) OnUnitDeath(IUnit* Source)
 	pChampion->OnUnitDeath(Source);
 }
 
+PLUGIN_EVENT(void) OnDash(UnitDash* Source)
+{
+	pChampion->OnDash(Source);
+}
+
 void LoadChampion()
 {
 	std::string szChampion = GEntityList->Player()->ChampionName();
@@ -1028,11 +1413,17 @@ void LoadChampion()
 		pChampion = new cAshe;
 	else if (szChampion == "Draven")
 		pChampion = new cDraven;
+	else if (szChampion == "Ezreal")
+		pChampion = new cEzreal;
 	// Midlane
 	else if (szChampion == "Ahri")
 		pChampion = new cAhri;
 	else if (szChampion == "Ziggs")
 		pChampion = new cZiggs;
+	else if (szChampion == "Lux")
+		pChampion = new cLux;
+	else if (szChampion == "Xerath")
+		pChampion = new cXerath;
 	// Jungle
 	else if (szChampion == "Olaf")
 		pChampion = new cOlaf;
@@ -1045,6 +1436,8 @@ void LoadChampion()
 		pChampion = new cDrMundo;
 	else if (szChampion == "Maokai")
 		pChampion = new cMaokai;
+	else if (szChampion == "Poppy")
+		pChampion = new cPoppy;
 	// Support
 	// Not Found
 	else
@@ -1067,6 +1460,7 @@ void LoadChampion()
 		GEventManager->AddEventHandler(kEventOnDestroyObject, OnDeleteObject);
 		GEventManager->AddEventHandler(kEventOnExitVisible, OnExitVisible);
 		GEventManager->AddEventHandler(kEventOnUnitDeath, OnUnitDeath);
+		GEventManager->AddEventHandler(kEventOnDash, OnDash);
 	}
 }
 
@@ -1075,10 +1469,10 @@ PLUGIN_API void OnLoad(IPluginSDK* PluginSDK)
 {
 	// Initializes global interfaces for core access
 	PluginSDKSetup(PluginSDK);
-	LoadChampion();
+	LoadChampion();	
 	pChampion->OnLoad();	
 	GRender->NotificationEx(Color::LightBlue().Get(), 2, true, true, "Welcome to Federal++ Nice 4 Fun!");
-	GRender->NotificationEx(Color::LightBlue().Get(), 3, true, true, "Sup Champions: Ahri, Ashe, Draven, Hecarim, Maokai, Nocturne, Olaf, Dr. Mundo");
+	GRender->NotificationEx(Color::LightBlue().Get(), 3, true, true, "Sup Champions: Ahri, Ashe, Draven, Dr.Mundo, Hecarim, Lux, Maokai, Nocturne, Olaf, Poppy");
 }
 
 // Called when plugin is unloaded
@@ -1101,4 +1495,5 @@ PLUGIN_API void OnUnload()
 	GEventManager->RemoveEventHandler(kEventOnDestroyObject, OnDeleteObject);
 	GEventManager->RemoveEventHandler(kEventOnExitVisible, OnExitVisible);
 	GEventManager->RemoveEventHandler(kEventOnUnitDeath, OnUnitDeath);
+	GEventManager->RemoveEventHandler(kEventOnDash, OnDash);
 }

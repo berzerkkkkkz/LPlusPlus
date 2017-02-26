@@ -217,7 +217,9 @@
     <ClCompile Include="Credits.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Ezreal.h" />
     <ClInclude Include="Toxic.h" />
+    <ClInclude Include="Xerath.h" />
     <ClInclude Include="zAhri.h" />
     <ClInclude Include="AutoSmite.h" />
     <ClInclude Include="BaseMenu.h" />
@@ -230,6 +232,7 @@
     <ClInclude Include="zDrMundo.h" />
     <ClInclude Include="zHecarim.h" />
     <ClInclude Include="zKogmaw.h" />
+    <ClInclude Include="zLux.h" />
     <ClInclude Include="zMaokai.h" />
     <ClInclude Include="zNocturne.h" />
     <ClInclude Include="zOlaf.h" />

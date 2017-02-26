@@ -42,6 +42,7 @@ public:
 					SmiteCombo = SmiteChampion->CheckBox("Use Smite in Combo", true);
 					SmiteComboHP = SmiteChampion->AddInteger("Minimum HP% to Smite Combo", 1, 100, 50);
 					KillstealSmite = SmiteChampion->CheckBox("Use Smite to killsteal", true);
+					SmiteAmmo = SmiteChampion->CheckBox("Save 1 smite charge", false);
 				}
 
 				SmiteDraw = SmiteSettings->AddMenu("Smite Drawings");
@@ -51,7 +52,7 @@ public:
 					SmiteDamage = SmiteDraw->CheckBox("Draw Smite Damage", false);
 				}
 
-				SmiteActive = SmiteSettings->CheckBox("Use Smite", true);
+				SmiteActive = SmiteSettings->CheckBox("Use Smite", true);				
 				SmiteKeyToggle = SmiteSettings->AddKey("Stop Smite Toggle", 17);
 			}
 		}
@@ -113,8 +114,15 @@ public:
 
 	void AutomaticSmite()
 	{
+		//GGame->PrintChat(std::to_string(GEntityList->Player()->GetSpellBook()->GetAmmo(kSummonerSlot1)).data());		
+		
 		if (FoundSmite && Smite->IsReady() && SmiteActive->Enabled() && KillstealSmite->Enabled())
-		{
+		{					
+			if (SmiteAmmo->Enabled() && (GEntityList->Player()->GetSpellBook()->GetAmmo(kSummonerSlot1) == 1 || GEntityList->Player()->GetSpellBook()->GetAmmo(kSummonerSlot2) ==	1))
+			{
+				return;
+			}
+			
 			for (auto hero : GEntityList->GetAllHeros(false, true))
 			{
 				auto damage = GDamage->GetSummonerSpellDamage(GEntityList->Player(), hero, kSummonerSpellSmite);
@@ -347,7 +355,7 @@ public:
 					}
 				}
 
-			}
+			}	
 		}
 	}
 	

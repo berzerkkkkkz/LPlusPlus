@@ -1,71 +1,9 @@
 #pragma once
 #include "PluginSDK.h"
 
-
-
-IMenu* FarmSettings;
-IMenuOption* farmQout;
-IMenuOption* farmQ;
-IMenuOption* farmE;
-IMenuOption* jungleQ;
-IMenuOption* jungleE;
-IMenuOption* jungleW;
-IMenuOption* minManaLC;
-IMenuOption* minManaJ;
-IMenuOption* useQlcMinions;
-
-
-IMenuOption* autoQ;
-IMenuOption* harassQ;
-IMenuOption* minManaQHarass;
-
-
-IMenuOption* autoW;
-IMenuOption* minManaWHarass;
-IMenuOption* interupterW;
-IMenuOption* turretW;
-IMenuOption* jumpW;
-
-
-IMenuOption* autoE;
-IMenuOption* comboE;
-IMenuOption* gapcloserE;
-IMenuOption* opsE;
-IMenuOption* telE;
-IMenuOption* minManaE;
-
-
-IMenuOption* autoR;
-IMenuOption* minHpRTarget;
-IMenuOption* Rcc;
-
-IMenuOption* keyToR;
-IMenuOption* killstealR;
-IMenuOption* minRangeKillR;
-IMenuOption* maxRangeKillR;
-IMenuOption* AutoRjungle;
-IMenuOption* Rdragon;
-IMenuOption* Rbaron;
-IMenuOption* Rred;
-IMenuOption* Rblue;
-IMenuOption* Rally;
-
-
-IMenuOption* noti;
-
-
-
-ISpell2* Q1;
-ISpell2* Q2;
-ISpell2* Q3;
-
-Vec3 prediction(0, 0, 0);
-Vec3 sendQHere(0, 0, 0);
-
 bool jumpKeyWasDown = false;
 bool wAtivo;
-float DragonDmg = 0;
-double DragonTime = 0;
+
 
 class Ziggs
 {
@@ -173,93 +111,6 @@ public:
 		}
 	}
 
-
-	static bool FoundEnemies(IUnit* source, float range)
-	{
-		for (auto enemys : GEntityList->GetAllHeros(false, true))
-		{
-			if (source->IsValidTarget(enemys, range))
-				return true;
-		}
-
-		return false;
-	}
-
-	static int CountMinions(Vec3 Location, int range)
-	{
-		int Count = 0;
-
-		for (auto Minions : GEntityList->GetAllMinions(false, true, false))
-		{
-			if ((Minions->GetPosition() - Location).Length() < range && Minions->IsValidTarget() && !Minions->IsDead())
-			{
-				Count++;
-			}
-		}
-		return (Count);
-	}
-
-	static int CountEnemy(Vec3 Location, int range)
-	{
-		int Count = 0;
-
-		for (auto Enemy : GEntityList->GetAllHeros(false, true))
-		{
-			if ((Enemy->GetPosition() - Location).Length() < range && Enemy->IsValidTarget() && !Enemy->IsDead())
-			{
-				Count++;
-			}
-		}
-		return (Count);
-	}
-
-	static int CountAlly(Vec3 Location, int range)
-	{
-		int Count = 0;
-
-		for (auto Ally : GEntityList->GetAllHeros(true, false))
-		{
-			if ((Ally->GetPosition() - Location).Length() < range && Ally->IsValidTarget() && !Ally->IsDead() && Ally != GEntityList->Player())
-			{
-				Count++;
-			}
-		}
-		return (Count);
-	}
-
-	static bool IsUnderTurret(IUnit* source)
-	{
-		for (auto turret : GEntityList->GetAllTurrets(false, true))
-		{
-			if (source->IsValidTarget(turret, 950.0f))
-				return true;
-		}
-
-		return false;
-	}
-
-	static bool FoundMinionsNeutral(float range)
-	{
-		for (auto Minions : GEntityList->GetAllMinions(false, false, true))
-		{
-			if (GEntityList->Player()->IsValidTarget(Minions, range))
-				return true;
-		}
-
-		return false;
-	}
-
-	static bool FoundMinions(float range)
-	{
-		for (auto Minions : GEntityList->GetAllMinions(false, true, false))
-		{
-			if (GEntityList->Player()->IsValidTarget(Minions, range))
-				return true;
-		}
-
-		return false;
-	}
-
 	static void CheckKeyPresses()
 	{
 		keystate = GetAsyncKeyState(jumpW->GetInteger());
@@ -275,75 +126,6 @@ public:
 		{
 			jumpKeyWasDown = false;
 		}
-	}
-
-	static bool CanMove(IUnit* target)
-	{
-		if (target->MovementSpeed() < 50 || target->HasBuffOfType(BUFF_Stun) || target->HasBuffOfType(BUFF_Fear) || target->HasBuffOfType(BUFF_Snare) || target->HasBuffOfType(BUFF_Knockup) || target->HasBuff("Recall") ||
-
-			target->HasBuffOfType(BUFF_Knockback) || target->HasBuffOfType(BUFF_Charm) || target->HasBuffOfType(BUFF_Taunt) || target->HasBuffOfType(BUFF_Suppression))
-
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
-
-	static float GetDistance(IUnit* source, IUnit* target)
-	{
-		auto x1 = source->GetPosition().x;
-		auto x2 = target->GetPosition().x;
-		auto y1 = source->GetPosition().y;
-		auto y2 = target->GetPosition().y;
-		auto z1 = source->GetPosition().z;
-		auto z2 = target->GetPosition().z;
-		return static_cast<float>(sqrt(pow((x2 - x1), 2.0) + pow((y2 - y1), 2.0) + pow((z2 - z1), 2.0)));
-	}
-
-	static float GetDistanceVectors(Vec3 from, Vec3 to)
-	{
-		float x1 = from.x;
-		float x2 = to.x;
-		float y1 = from.y;
-		float y2 = to.y;
-		float z1 = from.z;
-		float z2 = to.z;
-		return static_cast<float>(sqrt(pow((x2 - x1), 2.0) + pow((y2 - y1), 2.0) + pow((z2 - z1), 2.0)));
-	}
-
-	static Vec3 GetTrapPos(float range)
-	{
-
-		for (auto enemy : GEntityList->GetAllHeros(false, true))
-		{
-
-			if (enemy->IsValidTarget() && GetDistance(GEntityList->Player(), enemy) < range && (enemy->HasBuff("BardRStasis") || enemy->HasBuffOfType(BUFF_Invulnerability)))
-			{
-				return enemy->GetPosition();
-			}
-
-
-			for (auto object : GEntityList->GetAllUnits())
-			{
-				if (object->IsValidObject() && GetDistance(GEntityList->Player(), object) < range)
-				{
-
-					auto name = object->GetObjectName();
-
-					if (strstr(object->GetObjectName(), "gatemarker_red.troy") || strstr(object->GetObjectName(), "global_ss_teleport_target_red.troy") ||
-						strstr(object->GetObjectName(), "lifeaura") && GetDistance(enemy, object) < 200 || strstr(object->GetObjectName(), "r_indicator_red.troy"))
-					{
-						return object->GetPosition();
-					}
-				}
-
-			}
-		}
-
-		return Vec3(0, 0, 0);
 	}
 
 	static bool IsMovingInSameDirection(IUnit* source, IUnit* target)
@@ -447,6 +229,29 @@ public:
 					{
 						DragonDmg = mob->GetHealth();
 					}
+				}
+			}
+		}
+	}
+
+	static void Combo()
+	{
+		if (comboE->Enabled() && GEntityList->Player()->ManaPercent() > minManaE->GetInteger())
+		{
+			auto eTarget = GTargetSelector->FindTarget(QuickestKill, SpellDamage, E->Range());
+
+			if (GetDistance(GEntityList->Player(), eTarget) < E->Range() && eTarget->IsValidTarget(GEntityList->Player(), E->Range()) && !eTarget->IsDead() && !eTarget->IsInvulnerable())
+			{
+				E->CastOnTarget(eTarget, kHitChanceHigh);
+
+				if (eTarget->HasBuffOfType(BUFF_Slow))
+				{
+					E->CastOnTarget(eTarget, kHitChanceHigh);
+				}
+
+				if (IsMovingInSameDirection(GEntityList->Player(), eTarget))
+				{
+					E->CastOnTarget(eTarget, kHitChanceHigh);
 				}
 			}
 		}
@@ -572,26 +377,7 @@ public:
 							E->CastOnPosition(trapPos);
 						}
 					}
-
-					if (GOrbwalking->GetOrbwalkingMode() == kModeCombo && GEntityList->Player()->IsMoving() && comboE->Enabled() && GEntityList->Player()->ManaPercent() > minManaE->GetInteger())
-					{
-						auto eTarget = GTargetSelector->FindTarget(QuickestKill, PhysicalDamage, E->Range());
-
-						if (GetDistance(GEntityList->Player(), eTarget) < E->Range() && eTarget->IsValidTarget() && !eTarget->IsDead() && !eTarget->IsInvulnerable())
-						{
-							E->CastOnTargetAoE(eTarget, 2, kHitChanceHigh);
-
-							if (eTarget->HasBuffOfType(BUFF_Slow))
-							{
-								E->CastOnTarget(eTarget, kHitChanceHigh);
-							}
-
-							if (IsMovingInSameDirection(GEntityList->Player(), eTarget))
-							{
-								E->CastOnTarget(eTarget, kHitChanceHigh);
-							}
-						}
-					}
+					
 					else if (GEntityList->Player()->ManaPercent() > minManaLC->GetInteger() && farmE->Enabled())
 					{
 						Vec3 posE;
