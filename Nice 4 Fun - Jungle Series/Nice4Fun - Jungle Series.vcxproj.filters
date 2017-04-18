@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Program.cpp" />
+    <ClCompile Include="PluginSDK.cpp">
+      <Filter>SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Clipper.cpp">
+      <Filter>SDK</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Diana.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Elise.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Galio.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Ivern.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Gragas.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="LeeSin.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Hecarim.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Khazix.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Kindred.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Olaf.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Warwick.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Rengar.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Nocturne.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="LPPConstants.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="PluginSDK.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Clipper.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseMenu.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Champions.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ChampTemplate.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="PluginData.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Template.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Polygons.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Points.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Toxic.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Trinket.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoSmite.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Champions">
+      <UniqueIdentifier>{14f231ea-3220-4ae3-9ac9-999c01d5c3a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SDK">
+      <UniqueIdentifier>{399ccfdc-b534-4815-b966-6b07089ac30e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{a771183b-8bc6-4e48-a647-844ab27b5fe3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{10c96351-ecd5-471f-a4c6-7a2db7abd64c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
