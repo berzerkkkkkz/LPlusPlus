@@ -97,6 +97,45 @@
     <ClInclude Include="AutoSmite.h">
       <Filter>Utility</Filter>
     </ClInclude>
+    <ClInclude Include="Amumu.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Evelynn.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Jarvan.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Jax.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Nunu.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="RekSai.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Sejuani.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaco.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Shyvana.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Skarner.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Udyr.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="XinZhao.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="Zac.h">
+      <Filter>Champions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Champions">

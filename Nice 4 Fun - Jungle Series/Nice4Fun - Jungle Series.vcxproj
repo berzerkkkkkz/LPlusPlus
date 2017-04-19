@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Amumu.h" />
     <ClInclude Include="AutoSmite.h" />
     <ClInclude Include="BaseMenu.h" />
     <ClInclude Include="Champions.h" />
@@ -155,13 +156,17 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="Diana.h" />
     <ClInclude Include="Elise.h" />
+    <ClInclude Include="Evelynn.h" />
     <ClInclude Include="Galio.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="Gragas.h" />
     <ClInclude Include="Ivern.h" />
+    <ClInclude Include="Jarvan.h" />
+    <ClInclude Include="Jax.h" />
     <ClInclude Include="Khazix.h" />
     <ClInclude Include="Kindred.h" />
     <ClInclude Include="LeeSin.h" />
+    <ClInclude Include="Nunu.h" />
     <ClInclude Include="Points.h" />
     <ClInclude Include="Polygons.h" />
     <ClInclude Include="Hecarim.h" />
@@ -170,12 +175,20 @@
     <ClInclude Include="Olaf.h" />
     <ClInclude Include="PluginData.h" />
     <ClInclude Include="PluginSDK.h" />
+    <ClInclude Include="RekSai.h" />
     <ClInclude Include="Rengar.h" />
+    <ClInclude Include="Sejuani.h" />
+    <ClInclude Include="Shaco.h" />
+    <ClInclude Include="Shyvana.h" />
+    <ClInclude Include="Skarner.h" />
     <ClInclude Include="Template.h" />
     <ClInclude Include="Toxic.h" />
     <ClInclude Include="Trinket.h" />
+    <ClInclude Include="Udyr.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Warwick.h" />
+    <ClInclude Include="XinZhao.h" />
+    <ClInclude Include="Zac.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Clipper.cpp" />

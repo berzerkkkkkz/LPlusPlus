@@ -78,7 +78,7 @@ public:
 
 		if (FoundSmite)
 		{
-			GRender->NotificationEx(Vec4(0,255,0,255), 2, true, true, ("Federal Smite: Smite Found!"));
+			GRender->NotificationEx(Color::Green().Get(), 2, true, true, ("Federal Smite: Smite Found!"));
 
 		}
 	}
@@ -128,7 +128,7 @@ public:
 					if (strstr(GPluginSDK->GetEntityList()->Player()->GetSpellName(kSummonerSlot1), "SummonerSmitePlayerGanker") ||
 						strstr(GPluginSDK->GetEntityList()->Player()->GetSpellName(kSummonerSlot2), "SummonerSmitePlayerGanker"))
 					{
-						if (20 + 8 * GEntityList->Player()->GetLevel() > hero->GetHealth())
+						if (GetDistance(GEntityList->Player(), hero) <= 570 && 20 + 8 * GEntityList->Player()->GetLevel() > hero->GetHealth())
 						{
 							if (!FoundNeutralEpic(1500))
 							{
