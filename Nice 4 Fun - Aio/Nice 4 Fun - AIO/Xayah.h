@@ -51,13 +51,13 @@ public:
 			HarassMana = HarassSettings->AddInteger("Minimum MP% to Harass", 1, 100, 60);
 		}
 
-		KillstealSettings = MainMenu->AddMenu("Killsteal Settings");
+		/*KillstealSettings = MainMenu->AddMenu("Killsteal Settings");
 		{
 			Killsteal = KillstealSettings->CheckBox("Activate KillSteal", true);
 			KillstealQ = KillstealSettings->CheckBox("Use Q to KillSteal", true);			
 			KillstealE = KillstealSettings->CheckBox("Use E to KillSteal", true);
 			KillstealR = KillstealSettings->CheckBox("Use R + E to KillSteal", true);
-		}
+		}*/
 
 		LaneClearSettings = MainMenu->AddMenu("LaneClear Settings");
 		{
