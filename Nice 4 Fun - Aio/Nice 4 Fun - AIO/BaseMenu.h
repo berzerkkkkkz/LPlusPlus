@@ -598,7 +598,7 @@ std::vector<SpellsDanger> SpellsDangerList =
 	{ "Malphite", "ufslash", isSkillshotCircle, kSlotR, false, "", 0.f },
 	{ "Malzahar", "malzaharr", isTargeted, kSlotR, false, "", 0.f},
 	{ "MonkeyKing", "monkeykingspintowin", isSelfCast, kSlotR, false, "", 0.f },
-	{ "Nautilus", "nautilusrtest" , none, kSlotR, true, "nautilus_base_r_sequence_impact.troy", 0.f},
+	{ "Nautilus", "nautilusgrandline" , isTargeted, kSlotR, false, "", 0.f},
 	{ "Orianna", "orianadetonatecommand", others, kSlotR, false, "", 350.f },
 	{ "Riven", "rivenizunablade", isSkillshotLine, kSlotR, true, "rivenwindslashmissile", 0.f },
 	{ "Sejuani", "sejuaniglacialprisontart", isSkillshotLine, kSlotR, true, "sejuaniglacialprison", 0.f },
@@ -606,8 +606,10 @@ std::vector<SpellsDanger> SpellsDangerList =
 	{ "Sona", "sonar", isSkillshotLine, kSlotR, true, "sonar", 0.f },
 	{ "Syndra", "syndrar", isTargeted, kSlotR, false, "", 0.f },
 	{ "Thresh", "threshq", isSkillshotLine, kSlotQ, true, "threshqmissile", 0.f},
+	{ "Tristana", "tristanar", none, kSlotR, true, "tristanar", 0.f},
 	{ "Varus", "varusr", isSkillshotLine, kSlotR, true, "varusrmissile", 0.f },
 	{ "Veigar", "veigarprimordialburst", isTargeted, kSlotR, false, "", 0.f },
+	{ "Vi", "vir", isTargeted, kSlotR, true, "Virmissile", 0.f },
 	{ "Viktor", "viktorchaosstorm", isSkillshotCircle, kSlotR, false, "", 0.f },
 };
 

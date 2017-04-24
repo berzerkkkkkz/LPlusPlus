@@ -4311,10 +4311,10 @@ void LoadChampion()
 		pChampion = new cTristana;
 	else if (szChampion == "ezreal")
 		pChampion = new cEzreal;
-	//else if (szChampion == "caitlyn")
-		//pChampion = new cCaitlyn;
-	//else if (szChampion == "vayne")
-		//pChampion = new cVayne;
+	else if (szChampion == "caitlyn")
+		pChampion = new cCaitlyn;
+	else if (szChampion == "vayne")
+		pChampion = new cVayne;
 	else if (szChampion == "xayah")
 		pChampion = new cXayah;
 	// Midlane

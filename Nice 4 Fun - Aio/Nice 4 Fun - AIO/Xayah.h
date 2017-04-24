@@ -18,7 +18,8 @@ public:
 			{
 				for (auto Spells : SpellsDangerList)
 				{
-					if (Compare(enemy->ChampionName(), Spells.Champion.data()) == 1)
+					std::string CName = enemy->ChampionName();
+					if (CName == Spells.Champion)
 					{
 						std::string szMenuName = "Dodge - " + std::string(Spells.Champion.data()) + " : "  +  std::string(SpellLetra(Spells.Slot));	
 						std::string szMenuHP = "Min HP% - " + std::string(Spells.Champion.data()) + " : " + std::string(SpellLetra(Spells.Slot));
@@ -48,6 +49,14 @@ public:
 			HarassE = HarassSettings->CheckBox("Use E", false);
 			hPassiveStacks = HarassSettings->AddInteger("Min E Feather Stacks", 1, 10, 3);
 			HarassMana = HarassSettings->AddInteger("Minimum MP% to Harass", 1, 100, 60);
+		}
+
+		KillstealSettings = MainMenu->AddMenu("Killsteal Settings");
+		{
+			Killsteal = KillstealSettings->CheckBox("Activate KillSteal", true);
+			KillstealQ = KillstealSettings->CheckBox("Use Q to KillSteal", true);			
+			KillstealE = KillstealSettings->CheckBox("Use E to KillSteal", true);
+			KillstealR = KillstealSettings->CheckBox("Use R + E to KillSteal", true);
 		}
 
 		LaneClearSettings = MainMenu->AddMenu("LaneClear Settings");
@@ -947,16 +956,28 @@ public:
 						{
 							//GUtility->LogConsole("Chegou Aqui - Target");
 							if (args.Target_ != nullptr && args.Target_->GetNetworkId() == GEntityList->Player()->GetNetworkId())
-							{
-								R->CastOnPosition(args.Caster_->GetPosition());								
+							{								
+								std::string CName = args.Caster_->ChampionName();
+								if (CName == "Nautilus" || CName == "Vi")
+								{
+									BaseTarget = args.Caster_;
+									GPluginSDK->DelayFunctionCall(400, []() {
+
+										R->CastOnPosition(BaseTarget->GetPosition());
+									});
+								}
+								else
+								{
+									R->CastOnPosition(args.Caster_->GetPosition());
+								}
 							}
 						}
 
 						if (Spells.Type == isSelfCast)
 						{
-							//GUtility->LogConsole("Chegou Aqui - Self");
+							//GUtility->LogConsole("Chegou Aqui - 1Self");
 							if (args.Target_ != nullptr && GetDistance(GEntityList->Player(), args.Target_) <= args.Radius_) 
-							{
+							{								
 								R->CastOnPosition(args.Caster_->GetPosition());								
 							}
 						}
@@ -993,27 +1014,12 @@ public:
 			for (auto spells : SkillsMissilesDanger.ToVector())
 			{				
 				if (ListaSpells[spells.Champion + spells.Name]->Enabled())
-				{					
+				{
 					auto Speed = 0.f;
 					IUnit* myTarget = nullptr;
 
-					if (spells.Champion == "Nautilus")
-					{
-						Speed = 1300.f;
-
-						for (auto tar : GEntityList->GetAllHeros(false, true))
-						{
-							if (tar != nullptr && strstr(tar->ChampionName(), "Nautilus"))
-							{
-								myTarget = tar;
-							}
-						}
-					}
-					else
-					{
-						Speed = GMissileData->GetSpeed(spells.Missile);
-						myTarget = GMissileData->GetCaster(spells.Missile);
-					}
+					Speed = GMissileData->GetSpeed(spells.Missile);
+					myTarget = GMissileData->GetCaster(spells.Missile);
 
 					if (spells.Missile != nullptr &&
 						GetDistance(spells.Missile, GEntityList->Player()) <= (0.6 + GGame->Latency() / 1000) * Speed &&
@@ -1073,7 +1079,7 @@ public:
 							md.Missile = Source;
 							md.Name = Spells.Name;
 							md.Champion = Spells.Champion;
-							SkillsMissilesDanger.Add(md);
+							SkillsMissilesDanger.Add(md);							
 						}
 					}
 				}
@@ -1082,25 +1088,6 @@ public:
 			if (strstr(Source->GetObjectName(), "Orianna_Base_Z_ball_glow_red.troy"))				
 			{
 				RMissile = Source;
-			}
-
-			if (strstr(Source->GetObjectName(), "Nautilus_Base_R_sequence_impact.troy"))
-			{
-				for (auto Spells : SpellsDangerList)
-				{
-					if (Spells.Missile)
-					{
-						if (strstr(ToLower(Source->GetObjectName()).c_str(), Spells.NameMissile.data()))
-						{
-							//GUtility->LogConsole("Missile Detectado");
-							MissilesDangers md;
-							md.Missile = Source;
-							md.Name = Spells.Name;
-							md.Champion = Spells.Champion;
-							SkillsMissilesDanger.Add(md);
-						}
-					}
-				}
 			}			
 
 			if (GetDistance(Source, GEntityList->Player()) < 1500)
@@ -1120,12 +1107,17 @@ public:
 				{
 					if (Spells.Missile)
 					{
-						if (strstr(ToLower(GMissileData->GetName(Source)).c_str(), Spells.NameMissile.data()) || strstr(ToLower(Source->GetObjectName()).c_str(), Spells.NameMissile.data()))
+						if (strstr(ToLower(GMissileData->GetName(Source)).c_str(), Spells.NameMissile.data()))
 						{
 							SkillsMissilesDanger.RemoveAll([&](MissilesDangers s) {return s.Missile->GetNetworkId() == Source->GetNetworkId(); });							
 						}						
 					}
 				}
+			}			
+
+			if (GetDistance(Source, GEntityList->Player()) < 1500)
+			{
+				//GUtility->LogConsole("Create: %s", Source->GetObjectName());
 			}
 		}		
 	}
